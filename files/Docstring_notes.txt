@@ -1,0 +1,79 @@
+    Parameters
+    ----------
+    Saved Files
+    -----------
+    Returns
+    -------
+    Notes
+    -----
+    assay_type : string
+        Data format, as recognised from the raw input file.
+    data_file_path : filepath
+        Path to the file containing the response data. Note that some input files will contain both dose and
+        response data (e.g. Excel inputs). Others only contain response data, with doses provided in a separate file.
+    data_file : string
+        input file name
+    df_eval_values : pandas DataFrame
+        For developers only. Returns the dataframe showing the evaluated LD50 values for the experiment.
+    dff : pandas DataFrame
+        Dataframe for Files. Contains all the paths for input and output files.
+        Created from the "files" tab of the settings excel file.
+    dfm: pandas DataFrame
+        For developers only. The dataframe showing the evaluated LD50 values for all experiments combined.
+        The index contains each unique sample. The columns include Mean, Std and SEM.
+    dose_conc_excel_path : string
+        File path for the accompanying excel file, that contains the dose data for a 96-well assay.
+    df_resp_orig : DataFrame
+        Dataframe containing the the original response data.
+    df_resp_all : String
+        String, to be replaced with a dataframe later.
+    df_dose_orig : DataFrame
+        Dataframe containing the dose concentrations. Needs to be standardised so that the index and columns
+        matche the response dataframe.
+    df_dose_orig : pandas DataFrame
+        The original dataframe with the dose data for standardisation. It will, for example, show a horizontal
+        increase in dose for 96-well assay, with 12 dose concentrations and 8 samples, but a vertical increase
+        in dose for 8 dose concentrations and 12 samples.
+    df_resp_all : pandas DataFrame
+        Dataframe with the response data, which is usually more uniform than the dose data and requires less
+        standardisation. For 96-well formats, this is already created and will simply be returned. For 12-well
+        formats containing dose and response data in excel format, this object will be created.
+    df_resp_all : String
+        String, to be replaced with a dataframe later.
+    df_resp_orig : pandas DataFrame
+        Dataframe containing the the original response data.
+    df_settings : pandas DataFrame
+        Parameter settings for fitting, and data analysis
+    EC50_analysis_fig_01 : png (also as pdf)
+        Scattergram with all data and sigmoidal curves for that experiment.
+        Bar-chart with all calculated EC50 values for that experiment, sample letter only on x-axis.
+    EC50_analysis_fig_02 : png (also as pdf)
+        Bar-chart with all calculated EC50 values for that experiment,
+        full name on x-axis
+    fn : int
+        File number in list of files to analyse.
+    fig0_single_sample_png : png (also as pdf)
+        Fitted sigmoidal curve for an individual sample. Contains details regarding the
+        automatic judement as to whether the "data_needs_checking" or whether the data seems okay. Contains curves
+        for original data, and also adjusted datasets (e.g. "fixed upper limit", or in future "outliers removed")
+    input_data_file_seems_okay : bool
+        Whether the file seems to be intact, and contains one of the identifiers specifying the data format.
+    input_data_file_seems_okay : bool
+        Whether the file seems to be intact, and contains one of the identifiers specifying the data format.
+    ident_txtstr : string
+        String inserted into the raw datafile to identify datatype
+    list_96_well_doseconc_types : list of strings
+        List of formats that can be parsed by the module.
+    ofd_EC50_eval_csv : csv
+        Output summary csv file with EC50 values.
+        Comma separation, English numbering system, with values in quotation marks to increase compatibility.
+    ofd_EC50_eval_excel : excel file
+        Output summary excel file with EC50 values
+    sample_96_well : bool
+        Whether the format is one of the 96-well formats, which utilizes a separate excel file for the dose conc.
+    sample_12_well_plate : bool
+        Whether the data utilises the 12-well format, which contains dose and response data in a single excel file.
+    settings_excel_file : filepath
+        Settings file containing the list of datafiles for analysis, and also chosen parameters
+    t20 : list
+        Tableau20 list of colours
