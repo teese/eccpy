@@ -57,13 +57,13 @@ Using ECCpy requires only the following:
 <h3>1) Prepare your data.</h3>
  - use the excel or microplate templates in the eccpy/templates folder
  - for the generic excel format, simply open the template and paste in your dose and response data.
-<br />
+
 <h3>2) Update an excel settings file</h3>
  - copy the ECCpy_settings_template.xlsx from eccpy/templates
  - open the excel file, input the name and location of your datafiles, and the desired location for your output files
  - write "TRUE" next to the files you want to examine
 ![01_run_curvefit_settings](docs/images/01_run_curvefit_settings.png)
-<br />
+
 <h3>3) tell ECCpy to "run".</h3>
  - run the ipython/jupyter notebook, which opens a python interpreter in your web browser
  - paste in the following three lines. Replace the location of your settings file.
@@ -80,21 +80,21 @@ eccpy.run_analysis(settings)
  - try the example excel files in the eccpy/examples folder before switching to your own data.
 
 # ECCpy output#
-<br />
+
 <h3>run_curvefit program</h3>
  - individual dose-response curves
  - automatic judging of data quality
  - daily summary curves, barchart and more!
 ![curve_fit_output_sample3](docs/images/curve_fit_output_sample3.png)
 ![generated_data_0EC50_analysis_fig](docs/images/generated_data_0EC50_analysis_fig.png)
-<br />
+
 <h3>run_analysis program</h3>
  - combines data from multiple experiments
  - excludes EC50 values that are not of sufficient quality, according to user-defined thresholds
  - bar charts with mean and SEM over all selected experiments
  - scatter plots showing individual datapoints for each day/experiment, and more!
 ![analysis_output_figures](docs/images/analysis_output_figures.png)
-<br /><br />
+
 <h3>compare_rawdata program</h3>
  - collects raw data and dose-response curves from multiple experiments
  - compares datapoints and fitted curves between the selected samples
