@@ -1,8 +1,9 @@
 ![ECCpy logo](docs/logo/ECCpy_logo.png)
-<img src="https://github.com/favicon.ico" width="48">
 
 # ECCpy
 ECCpy is a program for EC50 calculation in python.
+
+The EC50, or the "half maximal effective concentration", is a key measure of the effectiveness of a compound to affect a biological system. It is commonly used in pharmacology, biology and biochemistry. The EC50 is calculated by fitting the dose-response data to a sigmoidal curve, typically using the Hill equation. Variants include the half maximal "lethal dose" (LD50), and "inhibitor concentration" (IC50). 
 
 # Features
  **Robust data analysis.**<br />
@@ -28,7 +29,7 @@ ECCpy is a program for EC50 calculation in python.
  **Customisable.**<br />
  - simple python syntax 
  - open-source software
- - built on powerful numpy, scipy, pandas and matplotlib packages
+ - built on powerful numpy, scipy, and pandas packages
 
 # Development status
 
@@ -36,131 +37,68 @@ ECCpy has been used for hundreds of LD50 assays (Z-shaped curves) by research st
 
 The code has been extensively updated and annotated for public release. 
 
-However the module is still under development and is released "as is" with some known issues, limitations and legacy code. As a newly released module, some bugfixing is to be expected related to diverse operating systems, python versions, data formats, and experimental data types. 
+However the module is still under development and is released "as is" with some known issues, limitations and legacy code. As a newly released module, bugfixing related to diverse operating systems, python versions, data formats, and experimental data types should be expected. 
 
 #Installation
 
-For new python users, we recommend installing Anaconda python 3.x, which should contain all required python modules.
+ECCpy requires python 3.x (currently written for 3.5). We recommend the Anaconda python distribution, which contains all the required python modules (numpy, scipy, pandas and matplotlib).
 https://www.continuum.io/downloads
 
-ECCpy has been tested for python 3.5. It requires the python modules numpy, scipy, pandas, and matplotlib.
-
-To install ECCpy itself:
- - download and unpack the module from GitHub. 
- - open the command console and navigate to the ECCpy folder that contains setup.py
- - run the following command in the console: 
+To install ECCpy:
+ - download and unpack the module from Github 
+ - open the command console. Navigate to the ECCpy folder that contains setup.py
+ - run the following command: 
    `python setup.py install`
- - if successful, ECCpy will be installed as a module, allowing the "import eccpy" statement.
  
-For tips and tricks during installation, please see the Wiki (coming soon). Regularly updating of the module is recommended. The easiest way to update is with a version control system such as git.
-
 #Usage
-Here a dataset is examined that consists of four samples and a control. An LD50 experiment is repeated over three days.
-(code for generating this example is shown below)
-![generated_dot_plots_lgd_right](docs/images/generated_dot_plots_lgd_right.png)
+Using ECCpy requires only the following:
+1) Prepare your data, 2) update an excel settings file, 3) tell ECCpy to "run".
 <br />
-The data for each day is prepared in an excel file, to be used as ECCpy input.
-The excel template contains three tabs. 1) dose, 2) response, and 3) a "template_identifier" tab that helps ECCpy identify the excel format.
-![Generated_input_excel_files](docs/images/Generated_input_excel_files.png)
+**1) Prepare your data.**
+ - use the excel or microplate templates in the eccpy/templates folder
+ - for the generic excel format, simply open the template and paste in your dose and response data.
 <br />
-An excel settings file controls all ECCpy inputs, including the list of files to examine. Update the settings file to include data files.
+**2) Update an excel settings file**
+ - copy the ECCpy_settings_template.xlsx from eccpy/templates
+ - open the excel file, input the name and location of your datafiles, and the desired location for your output files
+ - write "TRUE" next to the files you want to examine
 ![01_run_curvefit_settings](docs/images/01_run_curvefit_settings.png)
 <br />
-Run curve_fit in python or the ipython/jupyter notebook, to fit a sigmoidal curve to the dose-response data, and calculate EC50 values.
+**3) tell ECCpy to "run".**
+ - run the ipython/jupyter notebook, which opens a python interpreter in your web browser
+ - paste in the following three lines. Replace the location of your settings file.
+ - hit Ctrl-Enter to run
+ - based on your output, adjust the quality thresholds in the settings file to suit your data
 ```
 import eccpy
 settings = r"D:\data\ECCpy_settings.xlsx"
 eccpy.run_curvefit(settings)
-```
-
-<br />
-The fitted curves are shown in the .png images. The list of calculated EC50 values are saved in excel and csv.
-![curve_fit_output_sample3](docs/images/curve_fit_output_sample3.png)
-<br />
-A summary figure for each day/experiment is created. Curve-fitting is accompanied by a judgefit program, that examines the quality of the curve fitting and EC50 value. Samples with a red letter code in the barchart x-axis (e.g. AB, sample 2) have been automatically judged by ECCpy as low quality..
-![generated_data_0EC50_analysis_fig](docs/images/generated_data_0EC50_analysis_fig.png)
-<br />
-In the list of quality filters on the right-hand-side, the red "r_squared" and "std_highdose_datapoints" show that for these filters, the fitted curve did not meet the user-defined quality threshold (as defined in the settings excel file). If the data fails to meet any of the thresholds, the EC50 is marked as red, and is excluded from the analysis program that compares data from multiple experiments. The curve is shown with both the original x- and y-axes (top left) and with normalised axes between 0 and 1 (bottom left).
-![AB_sample2](docs/images/AB_sample2.png)
-<br />
-
-In some cases, the the curve itself is annotated in red to show why the data quality is judged to be low. For example here the slope at the last datapoint is too high. Repeating the experiment with higher dose concentrations would be necessary.
-![sample4_red_slope](docs/images/sample4_red_slope.png)
-<br />
-
-The results from all three days can be compared with the run_analysis program. First mark "run_analysis" in the excel settings file as "TRUE":
-![run_analysis_settings](docs/images/run_analysis_settings.png)
-<br />
-run_analysis in python or the ipython/jupyter notebook.
-```
-import eccpy
-settings = r"D:\data\ECCpy_settings.xlsx"
 eccpy.run_analysis(settings)
 ```
-<br />
-The analysis program combines all high-quality EC50 values from the selected experiments, and presents the data as a barchart and scatter plot.
-![analysis_output_figures](docs/images/analysis_output_figures.png)
-<br />
-The compare_raw program goes through all the EC50 values calculated for the selected experiments, and compares the raw data curves for the selected samples.
-```
-# define which samples you want to compare, across all experiments
-samples = ["control", "sample1"]
-eccpy.compare_rawdata(settings_excel_file, samples)
-```
-![20160527_0_compare_raw](docs/images/20160527_0_compare_raw.png)
 
- **Code to generate an example dataset for analysis.**<br />
-```
-import eccpy
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-% matplotlib inline
-t20 = eccpy.tools.setup_t20_colour_list()
-dose_values = np.linspace(0,1,24)
-days = ["day1", "day2", "day3"]
-samples = ["sample1", "sample2","control","sample3","sample4"]
-df_dose = pd.DataFrame()
-df_response = pd.DataFrame()
-for i, day in enumerate(days):
-    fig, ax = plt.subplots()
-    ax.set_title(day)
-    for n, sample in enumerate(samples):
-        # add dose values
-        df_dose[sample] = dose_values
-        # create the hill constants for curves with EC50 offset and some randomisation
-        random_offset = n*0.18 + np.random.randn()/20
-        EC50 = 0.2 + random_offset
-        if day == "day3":
-            EC50 = EC50 - 0.1 
-        hill_constants = [100, 0, EC50, 7.1]
-        # generate perfect response curve
-        response_curve = eccpy.tools.hill_eq(hill_constants, dose_values)
-        # scatter datapoints to resemble real data. Add to dataframe and plot.
-        random = np.random.random(len(dose_values)) * 10
-        response_values = response_curve + random
-        if day == "day1" and sample == "sample2":
-            response_values[21] = (response_values.max() - response_values.min())*0.95
-            response_values[22] = (response_values.max() - response_values.min())*0.95
-        if day == "day2" and sample == "sample1":
-            response_values[::2] = response_values[::2]*1.2 + response_values.max()/5
-        if day == "day2" and sample == "sample4":
-            response_values[-1] = 0
-        #if day == "day2" and sample == "sample2":
-        #    response_values = response_values + random
-        df_response[sample] = response_values
-        ax.scatter(dose_values, df_response[sample], color=t20[n],label=sample)
-    ax.legend(loc="best")
-    ax.set_xlim(-0.1,1.5)
-    writer = pd.ExcelWriter("generated_data_{}.xlsx".format(i))
-    df_dose.to_excel(writer, sheet_name="dose", index=False)
-    df_response.to_excel(writer, sheet_name="response", index=False)
-    template = "eccpy|xlsx|generic|vertical"
-    template_identifier = pd.DataFrame(template,[0], [0])
-    template_identifier.to_excel(writer, sheet_name="template_identifier", index=False, header=False)
-    writer.save()
-    writer.close()
-```
+# Test
+ - try the example excel files in the eccpy/examples folder before switching to your own data.
+
+# ECCpy output
+<br />
+**run_curvefit program**
+ - individual dose-response curves
+ - automatic judging of data quality
+ - daily summary curves, barchart and more!
+![curve_fit_output_sample3](docs/images/curve_fit_output_sample3.png)
+![generated_data_0EC50_analysis_fig](docs/images/generated_data_0EC50_analysis_fig.png)
+<br />
+**run_analysis program**
+ - combines data from multiple experiments
+ - excludes EC50 values that are not of sufficient quality, according to user-defined thresholds
+ - bar charts with mean and SEM over all selected experiments
+ - scatter plots showing individual datapoints for each day/experiment, and more!
+![analysis_output_figures](docs/images/analysis_output_figures.png)
+<br /><br />
+**compare_rawdata program**
+ - collects raw data and dose-response curves from multiple experiments
+ - compares datapoints and fitted curves between the selected samples
+![20160527_0_compare_raw](docs/images/20160527_0_compare_raw.png)
 
 # Contribute
 If you encounter a bug or ECCpy doesn't work for any reason, please send an email to mark.teese /at/ tum.de or initiate an issue in Github.
