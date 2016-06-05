@@ -915,41 +915,42 @@ def calc_EC50(fn, dff, df_settings, t20):
             axarr[1,1].annotate(s=d_name[1:], xy=(xd[d],yaxis_pos[2]), fontsize=af, xycoords=xyc, alpha=0.75)
             EC50_calculable = dfe.loc["EC50_calculable{}".format(d),sLet]
             if EC50_calculable:
-                if dfe.loc["doseconc_stepsize_at_EC50{}".format(d),"%s_okay" % sLet] == True:
-                    # add the stepsize near the EC50, which determines whether more dose concentrations are necessary
-                    stepsize = "{:0.2f}".format(dfe.loc["doseconc_stepsize_at_EC50{}".format(d),sLet])
-                    stepcolour = dfe.loc["doseconc_stepsize_at_EC50{}".format(d),"%s_colour" % sLet]
-                    axarr[1,1].annotate(s=stepsize,xy=(xd[d],yaxis_pos[4]), fontsize=af, xycoords=xyc, alpha=0.75, color=stepcolour)
-                    saxe_lowdose = "{:0.2f}".format(dfe.loc["saxe_lowdose{}".format(d), sLet])
-                    saxe_highdose = "{:0.2f}".format(dfe.loc["saxe_highdose{}".format(d), sLet])
-                    axarr[1,1].annotate(s=saxe_lowdose,xy=(xd[d],yaxis_pos[5]), fontsize=af, xycoords=xyc, alpha=0.75,
-                                        color=dfe.loc["saxe_lowdose{}".format(d),"%s_colour" % sLet])
-                    axarr[1,1].annotate(s=saxe_highdose,xy=(xd[d],yaxis_pos[6]), fontsize=af, xycoords=xyc, alpha=0.75,
-                                        color=dfe.loc["saxe_highdose{}".format(d),"%s_colour" % sLet])
-                    if stepcolour != "k":
-                        doseconc_steps_at_EC50 = dfe.loc["doseconc_steps_at_EC50{}".format(d),sLet]
-                        axarr[1,0].plot(doseconc_steps_at_EC50,(0,0), color=stepcolour, linestyle="-", lw=2)
+                # add the stepsize near the EC50, which determines whether more dose concentrations are necessary
+                stepsize = "{:0.2f}".format(dfe.loc["doseconc_stepsize_at_EC50{}".format(d), sLet])
+                stepcolour = dfe.loc["doseconc_stepsize_at_EC50{}".format(d), "%s_colour" % sLet]
 
-                    # if the slope at the lowdose is above the chosen cutoff, draw a line on the normalised plot, axarr[1,0]
-                    if dfe.loc["saxe_lowdose{}".format(d), sLet] > df_settings.loc["max_lowdose_slope","B"]:
-                        saxe_lowdose_values = dfe.loc["saxe_lowdose_values{}".format(d), sLet]
-                        # draw red vertical line showing the slope at the lowdose datapoint
-                        axarr[1,0].plot(saxe_lowdose_values[0], saxe_lowdose_values[1], 'r-', lw=2)
-                    # if the slope at the highdose is higher than the chosen cutoff, draw a line on tho normalised plot
-                    if dfe.loc["saxe_highdose{}".format(d), sLet] > df_settings.loc["max_highdose_slope","B"]:
-                        saxe_highdose_values = dfe.loc["saxe_highdose_values{}".format(d), sLet]
-                        # draw red vertical line showing the slope at the lowdose datapoint
-                        axarr[1,0].plot(saxe_highdose_values[0], saxe_highdose_values[1], 'r-', lw=2)
+                # if dfe.loc["doseconc_stepsize_at_EC50{}".format(d),"%s_okay" % sLet] == True:
+                axarr[1,1].annotate(s=stepsize,xy=(xd[d],yaxis_pos[4]), fontsize=af, xycoords=xyc, alpha=0.75, color=stepcolour)
+                saxe_lowdose = "{:0.2f}".format(dfe.loc["saxe_lowdose{}".format(d), sLet])
+                saxe_highdose = "{:0.2f}".format(dfe.loc["saxe_highdose{}".format(d), sLet])
+                axarr[1,1].annotate(s=saxe_lowdose,xy=(xd[d],yaxis_pos[5]), fontsize=af, xycoords=xyc, alpha=0.75,
+                                    color=dfe.loc["saxe_lowdose{}".format(d),"%s_colour" % sLet])
+                axarr[1,1].annotate(s=saxe_highdose,xy=(xd[d],yaxis_pos[6]), fontsize=af, xycoords=xyc, alpha=0.75,
+                                    color=dfe.loc["saxe_highdose{}".format(d),"%s_colour" % sLet])
+                if stepcolour != "k":
+                    doseconc_steps_at_EC50 = dfe.loc["doseconc_steps_at_EC50{}".format(d),sLet]
+                    axarr[1,0].plot(doseconc_steps_at_EC50,(0,0), color=stepcolour, linestyle="-", lw=2)
 
-                else:
-                    # optional: print the dataframe showing which parameters are not acceptable
-                    #print(dfe.loc[dfe["%s_okay" % sLet] == False])
-                    EC50 = dfe.loc["EC50{}".format(d),sLet]
-                    if isinstance(EC50, str):
-                        # define x_position of annotation. Place the orig at around 0.6, & 2nd dataset(_ful) at around 0.3
-                        xd_wide = xd[d]-0.3-0.3*n
-                        axarr[1,1].annotate(s=d_name[1:],xy=(xd_wide,yaxis_pos[5]), fontsize=af, xycoords=xyc, color="r")
-                        axarr[1,1].annotate(s=EC50,xy=(xd_wide,yaxis_pos[6]), fontsize=af, xycoords=xyc, color="r")
+                # if the slope at the lowdose is above the chosen cutoff, draw a line on the normalised plot, axarr[1,0]
+                if dfe.loc["saxe_lowdose{}".format(d), sLet] > df_settings.loc["max_lowdose_slope","B"]:
+                    saxe_lowdose_values = dfe.loc["saxe_lowdose_values{}".format(d), sLet]
+                    # draw red vertical line showing the slope at the lowdose datapoint
+                    axarr[1,0].plot(saxe_lowdose_values[0], saxe_lowdose_values[1], 'r-', lw=2)
+                # if the slope at the highdose is higher than the chosen cutoff, draw a line on tho normalised plot
+                if dfe.loc["saxe_highdose{}".format(d), sLet] > df_settings.loc["max_highdose_slope","B"]:
+                    saxe_highdose_values = dfe.loc["saxe_highdose_values{}".format(d), sLet]
+                    # draw red vertical line showing the slope at the lowdose datapoint
+                    axarr[1,0].plot(saxe_highdose_values[0], saxe_highdose_values[1], 'r-', lw=2)
+
+            else:
+                # optional: print the dataframe showing which parameters are not acceptable
+                #print(dfe.loc[dfe["%s_okay" % sLet] == False])
+                EC50 = dfe.loc["EC50{}".format(d),sLet]
+                if isinstance(EC50, str):
+                    # define x_position of annotation. Place the orig at around 0.6, & 2nd dataset(_ful) at around 0.3
+                    xd_wide = xd[d]-0.3-0.3*n
+                    axarr[1,1].annotate(s=d_name[1:],xy=(xd_wide,yaxis_pos[5]), fontsize=af, xycoords=xyc, color="r")
+                    axarr[1,1].annotate(s=EC50,xy=(xd_wide,yaxis_pos[6]), fontsize=af, xycoords=xyc, color="r")
 
         # create a dictionary with the formatted EC50 values for printing on the figure
         EC50_str_dict = {}

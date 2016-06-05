@@ -97,8 +97,8 @@ def judge_fit(dfe, sLet, df_settings):
     # minimum rsquared of the fit from sigmoidal curve to the data
     min_rsquared = df_settings.loc["min_rsquared","B"]
     # minimum acceptable dase concentration stepsizes. Smaller stepsizes give more accurate EC50 values!
-    min_acceptable_doseconc_stepsize_at_EC50 = df_settings.loc["min_acceptable_doseconc_stepsize_at_EC50","B"]
-    min_recommended_doseconc_stepsize_at_EC50 = df_settings.loc["min_recommended_doseconc_stepsize_at_EC50","B"]
+    max_acceptable_doseconc_stepsize_at_EC50 = df_settings.loc["max_acceptable_doseconc_stepsize_at_EC50","B"]
+    max_recommended_doseconc_stepsize_at_EC50 = df_settings.loc["max_recommended_doseconc_stepsize_at_EC50","B"]
     # minimum hillslope of the fit from sigmoidal curve to the data (below 1, tends not to be sigmoidal)
     weak_hillslope_range = ast.literal_eval(df_settings.loc["weak_hillslope_range","B"])
     # minimum value for the end of the curve, on the y-axis (below -1, tends not to be sigmoidal)
@@ -220,10 +220,10 @@ def judge_fit(dfe, sLet, df_settings):
             doseconc_stepsize_at_EC50 = doseconc_after_EC50 - doseconc_before_EC50
             dfe.loc["doseconc_stepsize_at_EC50{}".format(d),sLet] = doseconc_stepsize_at_EC50
             # evaluate as "okay" if the stepsize at the EC50 is smaller than the min acceptable value
-            if doseconc_stepsize_at_EC50 <= min_acceptable_doseconc_stepsize_at_EC50:
+            if doseconc_stepsize_at_EC50 <= max_acceptable_doseconc_stepsize_at_EC50:
                 dfe.loc["doseconc_stepsize_at_EC50{}".format(d),"%s_okay" % sLet] = True
                 # if the stepsize is small, colour to dark red as a warning that the doseconc should be optimised
-                if doseconc_stepsize_at_EC50 <= min_recommended_doseconc_stepsize_at_EC50:
+                if doseconc_stepsize_at_EC50 <= max_recommended_doseconc_stepsize_at_EC50:
                     dfe.loc["doseconc_stepsize_at_EC50{}".format(d),"%s_colour" % sLet] = 'k'
                 else:
                     # colour dark red
