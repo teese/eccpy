@@ -52,14 +52,17 @@ def read_settings_file(settings_excel_file):
     df_samplenames = pd.read_excel(settings_excel_file, sheetname="samplenames")
     # open tab with list of files for analysis as a pandas dataframe (data frame files, dff)
     dff = pd.read_excel(settings_excel_file, sheetname = "files")
+    # raise an error if there are empty values, except in the notes and comments column
+    dff_data = dff.drop("notes & comments",axis=1)
+    inds = pd.Series(pd.isnull(dff_data).any(1).nonzero()[0])
+    if len(inds) > 0:
+        raise ValueError("\n\nThe 'files' tab of the excel settings appears to contain empty cells at row {}. "
+                         "Please delete any partially filled rows. "
+                         "Fill empty cells with the text 'None' if necessary.".format(list(inds+2)))
 
     # convert true-like objects (TRUE, true, WAHR, etc) to python bool True
     dff["run curvefit"] = dff["run curvefit"].apply(tools.convert_truelike_to_bool)
     dff["run analysis"] = dff["run analysis"].apply(tools.convert_truelike_to_bool)
-
-    # # replace np.nan values with the textstring "None"
-    # dff["textstring identifier in datafile"] = dff["textstring identifier in datafile"].fillna(value="None")
-    # dff["textstring identifier in datafile"] = dff["textstring identifier in datafile"].apply(tools.convert_nonelike_to_none)
 
     # the "output_directory" is optional. replace blank "Not a number, NaN" values with an empty string ""
     dff["output file directory"].fillna("", inplace=True)
@@ -70,11 +73,10 @@ def read_settings_file(settings_excel_file):
     # replace empty rows with the input file directory
     dff.loc[ofd_empty_index,"output file directory"] = dff.loc[ofd_empty_index,"input file directory"]
     dff.loc[:,"data_file_path"] = dff["input file directory"] + '/' + dff["response data file"]
-
     # define an output file directory (ofd), normalise the path so that it is os independent
     dff.loc[:,"ofd"] = dff.loc[:,"output file directory"].apply(lambda x: os.path.normpath(x))
     # create the "output_folder" as the directory plus a new folder with the orig response data filename
-    dff.loc[:,"data_file_base"] = dff.loc[:,"response data file"].apply(lambda name: "".join(name.split(".")[:-1]))
+    dff.loc[:,"data_file_base"] = dff.loc[:,"response data file"].apply(lambda name: ".".join(name.split(".")[:-1]))
     dff.loc[:,"output_folder"] = dff.loc[:,"ofd"] + "/" + dff.loc[:,"data_file_base"]
     dff.loc[:,"ofd_pdfs"] = dff.loc[:,"output_folder"] + "/" + "pdfs"
     dff.loc[:,"ofd_csv"] = dff.loc[:,"output_folder"] + "/" + "csv"
@@ -83,7 +85,6 @@ def read_settings_file(settings_excel_file):
     dff.loc[:,"ofd_EC50_eval_tabsep_csv"] = dff.loc[:,"ofd_csv"]  + "/" + dff.loc[:,"data_file_base"] +  "_EC50_evaluation_tabsep.csv"
     dff.loc[:,"EC50_analysis_fig_basename"] = dff.loc[:,"output_folder"] + "/" + dff.loc[:,"data_file_base"] + "EC50_analysis_fig"
     dff.loc[:,"EC50_analysis_fig_basename_pdf"] = dff.loc[:,"ofd_pdfs"] + "/" + dff.loc[:,"data_file_base"] + "EC50_analysis_fig"
-
     list_paths_to_normalise = ["data_file_path", "ofd", "output_folder", "ofd_pdfs", "ofd_csv", "ofd_EC50_eval_excel",
                                "ofd_EC50_eval_csv","ofd_EC50_eval_tabsep_csv"]
     # normalise the paths for selected columns, so that they are appropriate for the operating system

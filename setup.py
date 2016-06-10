@@ -41,4 +41,4 @@ setup(name='eccpy',
       keywords=["EC50", "LD50", "IC50", "dose-response", "effective concentration",
                 "lethal dose", "inhibitor concentration", "sigmoidal curve"],
       requires=['pandas', 'matplotlib', 'numpy', 'scipy'],
-      version='0.3.4')
+      version='0.3.5')

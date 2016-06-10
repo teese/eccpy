@@ -95,7 +95,6 @@ def run_analysis(settings_excel_file, **kwargs):
     print("\nStarting run_analysis program\n")
     # create output folder for analysed data, define basename
     outpath, basename = settings.setup_output_folder(settings_excel_file, "analysed")
-    print("outpath, basename", outpath, basename)
     analysed_data_basename = os.path.join(outpath, basename)
     # add the relevant paths to the data files to the dataframe for files (dff)
     df_settings, dff, df_samplenames = settings.read_settings_file(settings_excel_file)
@@ -584,6 +583,11 @@ def run_analysis(settings_excel_file, **kwargs):
 
                 for sSnum_b in df_all_exp_nonredundant.index:
                     data_for_that_sSnum = series_all_exp_redundant.loc[sSnum_b]
+                    if isinstance(data_for_that_sSnum, pd.Series):
+                        n_samples = data_for_that_sSnum.shape[0]
+                    else:
+                        n_samples = 1
+                    df_all_exp_nonredundant.loc[sSnum_b, "n{}{}".format(d, norm_dataset)] = n_samples
                     df_all_exp_nonredundant.loc[sSnum_b, "mean{}{}".format(d,norm_dataset)] = data_for_that_sSnum.mean()
                     df_all_exp_nonredundant.loc[sSnum_b, "std{}{}".format(d,norm_dataset)] = data_for_that_sSnum.std()
                     df_all_exp_nonredundant.loc[sSnum_b, "SEM{}{}".format(d,norm_dataset)] = pd.Series(data_for_that_sSnum).sem()
@@ -653,6 +657,9 @@ def run_analysis(settings_excel_file, **kwargs):
                                         format='png', dpi=150)
                 plt.close('all')
 
+                # move sample names to index
+                df_all_exp_nonredundant["sample_number"] = df_all_exp_nonredundant.index
+                df_all_exp_nonredundant.set_index("longname", inplace=True)
                 # save to excel
                 df_all_exp_nonredundant.to_excel(writer, sheet_name = "EC50_mean{}{}".format(d_name,norm_dataset))
                 df_all_exp_nonredundant.to_csv(analysed_data_basename + "EC50_mean{}{}".format(d_name,norm_dataset) + ".csv",

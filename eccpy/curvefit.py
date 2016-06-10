@@ -1229,6 +1229,7 @@ def calc_EC50(fn, dff, df_settings, t20):
     writer = pd.ExcelWriter(dff.loc[fn,"ofd_EC50_eval_excel"])#engine='xlsxwriter'
     df_eval_values.to_excel(writer, sheet_name="v_" + data_file[:20])
     df_eval_bool.to_excel(writer, sheet_name="b_" + data_file[:20])
+    df_settings.to_excel(writer, sheet_name="settings")
     writer.save()
     writer.close()
     print('\n-------------------------------------\n')
@@ -1515,6 +1516,15 @@ def standardise_doseconc_data(fn, dff, df_dose_orig, df_resp_all, data_file_path
             # drop any rows that are completely empty
             df_resp_data = df_resp_data.dropna(how="all")
             df_amp_conc_data = df_amp_conc_data.dropna(how="all")
+            # currently read_excel doesn't allow duplicate columns, adding .1, .2, .3 at the end of the column names
+            # see https://github.com/pydata/pandas/issues/10523
+            # in this case, if the secondlast character of the column name (sample name) is ".", remove the .1, .2 etc
+            # this allows the same sample to be analysed multiple times in the same experiment
+            # but will give errors if someone actually has a period (".") in the sample name
+            remove_dup_numbers = lambda x : ".".join(x.split(".")[:-1]) if "." in x[-3:] else x
+            df_resp_data.columns = pd.Series(df_resp_data.columns).apply(remove_dup_numbers)
+            df_amp_conc_data.columns = pd.Series(df_amp_conc_data.columns).apply(remove_dup_numbers)
+            print(df_resp_data.columns)
             # check if the column names are exactly the same
             if list(df_resp_data.columns) != list(df_amp_conc_data.columns):
                 print("The sample names are different between the A600 and amp_conc tabs. "
