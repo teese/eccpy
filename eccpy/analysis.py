@@ -662,7 +662,7 @@ def run_analysis(settings_excel_file, **kwargs):
                 df_all_exp_nonredundant.set_index("longname", inplace=True)
                 # save to excel
                 df_all_exp_nonredundant.to_excel(writer, sheet_name = "EC50_mean{}{}".format(d_name,norm_dataset))
-                df_all_exp_nonredundant.to_csv(analysed_data_basename + "EC50_mean{}{}".format(d_name,norm_dataset) + ".csv",
+                df_all_exp_nonredundant.to_csv(analysed_data_basename + "_EC50_mean{}{}".format(d_name,norm_dataset) + ".csv",
                                                sep=",", quoting=csv.QUOTE_NONNUMERIC)
         writer.save()
         writer.close()

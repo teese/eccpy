@@ -1524,7 +1524,6 @@ def standardise_doseconc_data(fn, dff, df_dose_orig, df_resp_all, data_file_path
             remove_dup_numbers = lambda x : ".".join(x.split(".")[:-1]) if "." in x[-3:] else x
             df_resp_data.columns = pd.Series(df_resp_data.columns).apply(remove_dup_numbers)
             df_amp_conc_data.columns = pd.Series(df_amp_conc_data.columns).apply(remove_dup_numbers)
-            print(df_resp_data.columns)
             # check if the column names are exactly the same
             if list(df_resp_data.columns) != list(df_amp_conc_data.columns):
                 print("The sample names are different between the A600 and amp_conc tabs. "
