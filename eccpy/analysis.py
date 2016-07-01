@@ -28,6 +28,9 @@ import ast
 import eccpy.settings as settings
 import eccpy.tools as tools
 
+# show wide pandas dataframes when using print function
+pd.set_option('display.expand_frame_repr', False)
+
 def run_analysis(settings_excel_file, **kwargs):
     """ Analysis of EC50 data from multiple experiments.
 
@@ -422,7 +425,7 @@ def run_analysis(settings_excel_file, **kwargs):
                     #         c) divide all datapoints by the standard (or mean of standard, if duplicated on that day)#
                     #         d) multiply by 100 to give a percentage                                                  #
                     ####################################################################################################
-                     
+
                     if norm_dataset == "_nonnorm":
                         series_EC50_data = df_allp.loc[:,c].dropna()
                     elif norm_dataset == "_norm":
@@ -435,7 +438,6 @@ def run_analysis(settings_excel_file, **kwargs):
                         # calculate the normalised EC50 as a percentage (EC50/standard*100)
                         series_EC50_data = df_allp.loc[:,c]/standard_EC50*100
                         series_EC50_data.dropna(inplace=True)
-
                     ########################################################################################
                     #                                                                                      #
                     #    Add values to a "scatterplot" which has the sample number on the x-axis,          #
@@ -485,7 +487,7 @@ def run_analysis(settings_excel_file, **kwargs):
                         for sSnum in index_ssNum_with_lists:
                             list_EC50_values = list(values_mult_sample[sSnum])
                             # create corresponding x-axis sample numbers (array of sSnum of length len(values_mult_sample))
-                            list_index_values = list(np.ones(len(list_EC50_values))*sSnum)
+                            list_index_values = list(np.ones(len(list_EC50_values)).astype(np.int64)*sSnum)
                             # add x and y values to the lists for all samples
                             list_xvalues_from_mult.extend(list_index_values)
                             list_yvalues_from_mult.extend(list_EC50_values)
@@ -574,14 +576,14 @@ def run_analysis(settings_excel_file, **kwargs):
 
                 # create figure object for the barchart with normalised data (collected from the scatter data)
                 barnorm_fig, barnorm_ax = plt.subplots()
-
                 series_all_exp_redundant = pd.Series(yvalues_all_exp, index = xvalues_all_exp)
-                # unique_samples = series_all_exp_redundant.index.unique().astype(int)
-
-                # df_all_exp_nonredundant = pd.DataFrame(index = unique_samples)
-                df_all_exp_nonredundant = pd.DataFrame(index = range(df_for_barchart.shape[0]))
-
-                for sSnum_b in df_all_exp_nonredundant.index:
+                # convert index to integer format
+                series_all_exp_redundant.index = series_all_exp_redundant.index.astype(np.int64)
+                # from the redundant index, create a unique, sorted index of sample numbers
+                series_all_exp_redundant_index_uniq = series_all_exp_redundant.index.unique()
+                series_all_exp_redundant_index_uniq.sort()
+                df_all_exp_nonredundant = pd.DataFrame(index=series_all_exp_redundant_index_uniq)
+                for sSnum_b in series_all_exp_redundant_index_uniq:
                     data_for_that_sSnum = series_all_exp_redundant.loc[sSnum_b]
                     if isinstance(data_for_that_sSnum, pd.Series):
                         n_samples = data_for_that_sSnum.shape[0]
@@ -592,7 +594,12 @@ def run_analysis(settings_excel_file, **kwargs):
                     df_all_exp_nonredundant.loc[sSnum_b, "std{}{}".format(d,norm_dataset)] = data_for_that_sSnum.std()
                     df_all_exp_nonredundant.loc[sSnum_b, "SEM{}{}".format(d,norm_dataset)] = pd.Series(data_for_that_sSnum).sem()
 
-                df_all_exp_nonredundant["longname"] = df_for_barchart.index
+                # extract the original longnames from dfm
+                longname_series = dfm.longname
+                longname_series.index = range(len(longname_series))
+                # add the longnames to df_all_exp_nonredundant (index should be sample number)
+                df_all_exp_nonredundant["longname"] = longname_series
+                # extract the shortnames from the dictionary in the settings file, if available
                 df_all_exp_nonredundant["shortname"] = df_all_exp_nonredundant["longname"].apply(lambda x : samplenames_dict[x] if x in list(samplenames_dict.keys()) else x)
 
                 # count the number of samples (number of boxes in barchart)

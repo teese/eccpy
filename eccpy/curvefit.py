@@ -85,7 +85,7 @@ def run_curvefit(settings_excel_file):
 
     # add the relevant paths to the data files to the dataframe for files (dff)
     df_settings, dff, df_samplenames = settings.read_settings_file(settings_excel_file)
-    # create t20 colour list
+        # create t20 colour list
     t20 = tools.setup_t20_colour_list()
 
     """
@@ -95,6 +95,7 @@ def run_curvefit(settings_excel_file):
     if True in list(dff.loc[:, "run curvefit"]):
         print("Starting run_curvefit program for selected samples.\n")
         for fn in dff.loc[dff["run curvefit"] == True].index:
+            print("output_pdf_folder", dff.loc[fn, "ofd_pdfs"])
             df_dose_all = calc_EC50(fn, dff, df_settings, t20)
         return df_dose_all
     else:
