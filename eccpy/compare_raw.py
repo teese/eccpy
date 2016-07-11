@@ -90,7 +90,7 @@ def compare_rawdata(settings_excel_file, sample_names, **kwargs):
     # define xycoordinates for later annotations
     xyc = "axes fraction"
     # extract list of adjusted datasets for analysis
-    datasets = ast.literal_eval(settings["adjust.datasets"])
+    datasets = ast.literal_eval(settings["datasets"])
 
     # create boolean
     at_least_one_sample_found_in_selected_datafiles = False

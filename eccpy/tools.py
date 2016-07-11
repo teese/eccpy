@@ -322,7 +322,7 @@ def convert_listlike_cols_to_str(df, list_cols, convert_nan=False, nanreplacemen
     # Convert individual stringlist back to a numpy array as follows
     np.array(ast.literal_eval(stringlist))
     # convert a column of stringlists back to arrays as follows
-    df.loc[:,"x_orig"] = df.loc[:,"x_orig"].apply(lambda x : np.array(ast.literal_eval(x)))
+    df.loc[:,"x"] = df.loc[:,"x"].apply(lambda x : np.array(ast.literal_eval(x)))
     """
     for col in list_cols:
         if col in df:

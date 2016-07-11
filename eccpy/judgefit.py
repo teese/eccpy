@@ -106,7 +106,7 @@ def judge_fit(dfe, sLet, settings):
 
     # create a list that contains the database suffixes (_orig for original, _ful for fixed upper limit)
     # datasets = ["_orig", "_ful"]
-    datasets = ast.literal_eval(settings["adjust.datasets"])
+    datasets = ast.literal_eval(settings["datasets"])
     for d in datasets:
         x = np.array(dfe.loc["x{}".format(d), sLet])
         y = np.array(dfe.loc["y{}".format(d), sLet])

@@ -144,7 +144,7 @@ def calc_EC50(fn, dff, settings, t20):
     """
     # define datasets that have been adjusted before attempting fitting ("_orig" is default, "_ful", "fixed upper limit"
     #  is for specific LD50 analyses
-    datasets = ast.literal_eval(settings["adjust.datasets"])
+    datasets = ast.literal_eval(settings["datasets"])
 
     # extract the data file path, method (e.g. EC50), expected curveshape (S or Z), etc. from settings file
     data_file = dff.loc[fn, "response data file"]
@@ -311,12 +311,12 @@ def calc_EC50(fn, dff, settings, t20):
         # reindex to drop the columns with text or boolean values
         x_orig = dfdose.loc[sLet,:].reindex(index = cols_with_data_in_both_x_and_y)
         # add the original x values to the output dataframe
-        dfe.loc["x_orig",sLet] = list(x_orig)
+        dfe.loc["x",sLet] = list(x_orig)
         # select the original y (response) values
         y_orig = np.array(dfresp.loc[sLet,:].reindex(index = cols_with_data_in_both_x_and_y))
 
         # add to output dataframe
-        dfe.loc["y_orig",sLet] = list(y_orig)
+        dfe.loc["y",sLet] = list(y_orig)
 
         for d in datasets:
             # currently add the ynorm_orig and xnorm_orig to all datasets. Other datasets might require changes later.
@@ -329,7 +329,7 @@ def calc_EC50(fn, dff, settings, t20):
         min = 0
         max = settings["fitted_curve_xaxis_max"]
         n_datapoints = settings["fitted_curve_n_datapoints"]
-        dfe.loc["x_fitted_norm_orig", sLet] = np.linspace(min, max, n_datapoints)
+        dfe.loc["x_fitted_norm", sLet] = np.linspace(min, max, n_datapoints)
         dfe.loc["n_doseconc_tested", sLet] = len(x_orig)
 
         #######################################################################################################
@@ -342,13 +342,13 @@ def calc_EC50(fn, dff, settings, t20):
 
         if "_ful" in datasets:
             # copy x values to the ful dataset, which utilise the same x-datapoints
-            dfe.loc["x_ful", sLet] = dfe.loc["x_orig", sLet]
-            dfe.loc["x_fitted_norm_ful", sLet] = dfe.loc["x_fitted_norm_orig", sLet]
+            dfe.loc["x_ful", sLet] = dfe.loc["x", sLet]
+            dfe.loc["x_fitted_norm_ful", sLet] = dfe.loc["x_fitted_norm", sLet]
 
-            ful_max = settings["adjust.ful.yaxis_fixed_upper_limit_max"]
-            ful_min = settings["adjust.ful.yaxis_fixed_upper_limit_min"]
+            ful_max = settings["ful.yaxis_fixed_upper_limit_max"]
+            ful_min = settings["ful.yaxis_fixed_upper_limit_min"]
 
-            # find where the first datapoint drops below the settings["adjust.ful.yaxis_fixed_upper_limit_min"]
+            # find where the first datapoint drops below the settings["ful.yaxis_fixed_upper_limit_min"]
             if y_orig.min() < ful_min:
                 index_y_ful = np.min(np.where(y_orig < ful_min))
             else:
@@ -371,7 +371,7 @@ def calc_EC50(fn, dff, settings, t20):
                 dfe.loc["y_ful",sLet] = list(y_ful)
             else:
                 # if there is only one datapoint above the limit, ful adjustment is useless, y_ful = y_orig
-                dfe.loc["y_ful",sLet] = dfe.loc["y_orig",sLet]
+                dfe.loc["y_ful",sLet] = dfe.loc["y",sLet]
 
         # normalise the y (response) data between 0 and 1 for the fitting algorithm
         for d in datasets:
@@ -422,7 +422,7 @@ def calc_EC50(fn, dff, settings, t20):
         #           |____|____|
 
         # Determine which datasets are going to be plotted
-        datasets = ast.literal_eval(settings["adjust.datasets"])
+        datasets = ast.literal_eval(settings["datasets"])
 
         # set the subplot number on the canvas
         Plot_Nr = 1
@@ -695,7 +695,7 @@ def calc_EC50(fn, dff, settings, t20):
             #           |____|____|
 
             # Determine which datasets are going to be plotted
-            datasets = ast.literal_eval(settings["adjust.datasets"])
+            datasets = ast.literal_eval(settings["datasets"])
 
             for n, d in enumerate(datasets):
                 # change the dataset name (e.g. "_orig" to "") to an empty string if there is only one dataset for analysis
@@ -756,7 +756,7 @@ def calc_EC50(fn, dff, settings, t20):
             # set xlabel, ylabel, title, grid, etc
             axarr[1,0].set_xlabel("dose concentration (normalised)", fontsize = fig_fontsize)
             axarr[1,0].set_ylabel("response concentration (normalised)",rotation='vertical', fontsize = fig_fontsize)
-            axarr[1,0].set_title("%s   %s" %(sLet, sample_name), fontsize = fig_fontsize)
+            axarr[1, 0].text(0.6, 1.1, "normalised data", horizontalalignment='center', fontsize=fig_fontsize)
             axarr[1,0].grid(True, color = '0.75')
             axarr[1,0].set_ylim(ymin_norm, 1.2)
             axarr[1,0].set_xlim(xmin_norm, 1.2)
@@ -1195,12 +1195,12 @@ def calc_EC50(fn, dff, settings, t20):
 
             #save figure
             fig.tight_layout()
-            fig.savefig(dff.loc[fn,"EC50_analysis_fig_basename"] + d_name + "_bar" + '_%02d.png'%bar_fig_nr, format='png', dpi=150)
-            fig.savefig(dff.loc[fn,"EC50_analysis_fig_basename_pdf"] + d_name + "_bar" + '_%02d.pdf'%bar_fig_nr, format='pdf')
+            fig.savefig(dff.loc[fn,"EC50_analysis_fig_basename"] + d_name + "_bar" + '.png', format='png', dpi=150)
+            fig.savefig(dff.loc[fn,"EC50_analysis_fig_basename_pdf"] + d_name + "_bar" + '.pdf', format='pdf')
             plt.close('all')
 
     # drop the columns with a large number of datapoints, to reduce size of the output files
-    #list_fitted_cols = "y_fitted_norm_ful", "x_fitted_norm_orig","y_fitted_norm_orig","x_fitted_orig","y_fitted_orig", "y_fitted_ful",
+    #list_fitted_cols = "y_fitted_norm_ful", "x_fitted_norm","y_fitted_norm_orig","x_fitted_orig","y_fitted_orig", "y_fitted_ful",
 
     list_arraylike_cols = []
     list_fitted_cols = []

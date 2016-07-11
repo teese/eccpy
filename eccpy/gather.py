@@ -106,7 +106,7 @@ def run_gather(settings_excel_file, **kwargs):
     # create t20 colour list
     t20 = tools.setup_t20_colour_list()
     # extract list of adjusted datasets for analysis
-    datasets = ast.literal_eval(settings["adjust.datasets"])
+    datasets = ast.literal_eval(settings["datasets"])
     """
     COLLECT THE EC50 VALUES FROM ALL THE OUTPUT FILES
     """
@@ -405,6 +405,11 @@ def run_gather(settings_excel_file, **kwargs):
                                       c=settings["x-axis (dose) label"],
                                       d=dose_units)
 
+                # drop the non-numerical columns
+                list_cols_to_drop = ["longname", "sampleorder", "shortname"]
+                for col in list_cols_to_drop:
+                    if col in sel_df_allp.columns:
+                        sel_df_allp.drop(col, axis=1, inplace=True)
                 # iterate through the experiment number (exp_nr) and columns (c) in the dataframe
                 # Each column represents a single experiment
                 for exp_nr, c in enumerate(sel_df_allp.columns):
