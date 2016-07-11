@@ -95,7 +95,6 @@ def run_curvefit(settings_excel_file):
     if True in list(dff.loc[:, "run curvefit"]):
         print("Starting run_curvefit program for selected samples.\n")
         for fn in dff.loc[dff["run curvefit"] == True].index:
-            print("output_pdf_folder", dff.loc[fn, "ofd_pdfs"])
             df_dose_all = calc_EC50(fn, dff, settings, t20)
         return df_dose_all
     else:

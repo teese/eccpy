@@ -31,7 +31,7 @@ import sys
 # show wide pandas dataframes when using print function
 pd.set_option('display.expand_frame_repr', False)
 
-def run_gather(settings_excel_file, **kwargs):
+def run_gatherer(settings_excel_file, **kwargs):
     """ Gathers and compares EC50 data from multiple experiments.
 
     Collects and analyses the output files from previously executed "run_curvefit".
@@ -95,7 +95,7 @@ def run_gather(settings_excel_file, **kwargs):
     Currently, the analysis automatically runs for original and adjusted datasets (e.g. fixed upper limit dataset).
     However summary graphs are created separately for each dataset.
     """
-    print("\nStarting run_gather program\n")
+    print("\nStarting run_gatherer program\n")
     # create output folder for analysed data, define basename
     outpath, basename = eccpysettings.setup_output_folder(settings_excel_file, "analysed")
     analysed_data_basename = os.path.join(outpath, basename)
@@ -249,9 +249,9 @@ def run_gather(settings_excel_file, **kwargs):
         # dfm.to_csv(analysed_data_basename + "_EC50_mean" + ".csv", sep=",", quoting=csv.QUOTE_NONNUMERIC)
         df_allp.to_csv(analysed_data_basename + "_EC50_indiv_exp" + ".csv", sep=",", quoting=csv.QUOTE_NONNUMERIC)
         # save both dataframes (mean data and indiv datapoints) from all experiments to excel
-        writer = pd.ExcelWriter(analysed_data_basename + ".xlsx")#engine='xlsx_nonnorm'
+        writer = pd.ExcelWriter(analysed_data_basename + ".xlsx")#engine='xlsx'
         # dfm.to_excel(writer, sheet_name = "EC50_mean")
-        df_allp.to_excel(writer, sheet_name="EC50_indiv_exp_nonnorm")
+        df_allp.to_excel(writer, sheet_name="EC50_indiv_exp")
 
         # sort the columns
         df_allp.sort_index(axis=1, inplace=True)
@@ -307,19 +307,19 @@ def run_gather(settings_excel_file, **kwargs):
                 # create a new figure object for the barchart
                 #bar_fig, bar_ax = plt.subplots()
 
-                # if norm_dataset == "_nonnorm":
+                # if norm_dataset == "":
                 #     # define EC50 data (y-axis, height of bars)
                 #     bar_y_meanEC50 = df_for_barchart[col_mean]
                 #     # define y-error bars
                 #     bar_yerr = df_for_barchart[col_SEM]
-                # elif norm_dataset == "_norm":
+                # elif norm_dataset == "_normalised":
                 #     bar_samplenames_selected = df_samplenames.loc[df_for_barchart.longname, :]
-                #     bar_y_meanEC50_nonnorm = df_for_barchart[col_mean]
-                #     bar_yerr_nonnorm = df_for_barchart[col_SEM]
+                #     bar_y_meanEC50 = df_for_barchart[col_mean]
+                #     bar_yerr = df_for_barchart[col_SEM]
                 #     # find the sample longname that is marked "True" as a standard
                 #     standard_name = bar_samplenames_selected[bar_samplenames_selected["standard for normalisation?"] == True].index[0]
                 #     standard_EC50 = df_for_barchart.loc[standard_name,col_mean]
-                #     bar_y_meanEC50 = bar_y_meanEC50_nonnorm / standard_EC50 * 100
+                #     bar_y_meanEC50 = bar_y_meanEC50 / standard_EC50 * 100
                 #     bar_yerr = bar_yerr / standard_EC50 * 100
 
                 # # define the indices of the boxes on the x-axis
@@ -340,9 +340,9 @@ def run_gather(settings_excel_file, **kwargs):
                 # # set the y-axis title
                 # # bar_ax.set_ylabel("EC50 (ug/ml)")
                 # # set the ylabel extension string
-                # if norm_dataset == "_nonnorm":
+                # if norm_dataset == "":
                 #     dose_units  = settings["x-axis (dose) units"]
-                # elif norm_dataset == "_norm":
+                # elif norm_dataset == "_normalised":
                 #     samplenames_selected = df_samplenames.loc[df_allp.longname, :]
                 #     # find the sample longname that is marked "True" as a standard
                 #     standard_name = samplenames_selected[samplenames_selected["standard for normalisation?"] == True].index[0]
@@ -384,9 +384,9 @@ def run_gather(settings_excel_file, **kwargs):
                 yvalues_all_exp = []
 
                 # create a string for the dose units (e.g. "mg/L", or "% positive control")
-                if norm_dataset == "_nonnorm":
+                if norm_dataset == "":
                     dose_units  = settings["x-axis (dose) units"]
-                elif norm_dataset == "_norm":
+                elif norm_dataset == "_normalised":
                     samplenames_selected = df_samplenames.loc[df_allp.longname, :]
                     # find the sample longname that is marked "True" as a standard
                     standard_name = samplenames_selected[samplenames_selected["standard for normalisation?"] == True].index[0]
@@ -431,9 +431,9 @@ def run_gather(settings_excel_file, **kwargs):
                     #         d) multiply by 100 to give a percentage                                                  #
                     ####################################################################################################
 
-                    if norm_dataset == "_nonnorm":
+                    if norm_dataset == "":
                         series_EC50_data = df_allp.loc[:,c].dropna()
-                    elif norm_dataset == "_norm":
+                    elif norm_dataset == "_normalised":
                         # find the sample longname that is marked "True" as a standard
                         standard_name = samplenames_selected[samplenames_selected["standard for normalisation?"] == True].index[0]
                         # find the sSNum (index number) of the standard
@@ -574,9 +574,9 @@ def run_gather(settings_excel_file, **kwargs):
                     #                                            c=settings_name, e=sel_df_allp.shape[1]))
                     # automatically tighten the layout and save figure
                     # scat_fig.tight_layout()
-                    # scat_fig.savefig(analysed_data_basename + "_datapoints_" + nametype + d + norm_dataset + '.png',
+                    # scat_fig.savefig(analysed_data_basename + "_datapoints_" + d + norm_dataset + '.png',
                     #                  format='png', dpi=300, bbox_extra_artists=(scat_lgd,), bbox_inches='tight')
-                    scat_fig.savefig(analysed_data_basename + "_datapoints_" + nametype + d_name + norm_dataset + '.png',
+                    scat_fig.savefig(analysed_data_basename + "_datapoints" + d_name + norm_dataset + '.png',
                                      format='png', dpi=300,bbox_extra_artists=(scat_lgd,), bbox_inches='tight')
 
                 # create figure object for the barchart with normalised data (collected from the scatter data)
@@ -630,9 +630,9 @@ def run_gather(settings_excel_file, **kwargs):
                 # set the y-axis title
                 # bar_ax.set_ylabel("EC50 (ug/ml)")
                 # set the ylabel extension string
-                if norm_dataset == "_nonnorm":
+                if norm_dataset == "":
                     dose_units  = settings["x-axis (dose) units"]
-                elif norm_dataset == "_norm":
+                elif norm_dataset == "_normalised":
                     samplenames_selected = df_samplenames.loc[df_allp.longname, :]
                     # find the sample longname that is marked "True" as a standard
                     standard_name = samplenames_selected[samplenames_selected["standard for normalisation?"] == True].index[0]
@@ -665,7 +665,7 @@ def run_gather(settings_excel_file, **kwargs):
                     # automatically tighten the layout and save figure
                     barnorm_fig.tight_layout()
                     # save the figure
-                    barnorm_fig.savefig(analysed_data_basename + "_bar_" + nametype + d_name + norm_dataset + '.png',
+                    barnorm_fig.savefig(analysed_data_basename + "_bar" + d_name + norm_dataset + '.png',
                                         format='png', dpi=150)
                 plt.close('all')
 
@@ -749,11 +749,11 @@ def run_gather(settings_excel_file, **kwargs):
         #         #
         #         # if conduct_normalisation:
         #         #     if at_least_one_dataset_is_normalised:
-        #         #         list_norm_datasets = ["_nonnorm", "_norm"]
+        #         #         list_norm_datasets = ["", "_normalised"]
         #         #     else:
-        #         #         list_norm_datasets = ["_nonnorm"]
+        #         #         list_norm_datasets = [""]
         #         # else:
-        #         #     list_norm_datasets = ["_nonnorm"]
+        #         #     list_norm_datasets = [""]
         #
         #         for norm_dataset in list_norm_datasets:
         #
@@ -774,9 +774,9 @@ def run_gather(settings_excel_file, **kwargs):
         #                 # convert any lists of floats to lists of numpy arrays
         #                 df_allp.loc[:,c] = df_allp.loc[:,c].apply(lambda x: np.array(x) if isinstance(x,list) else x)
         #
-        #                 if norm_dataset == "_nonnorm":
+        #                 if norm_dataset == "":
         #                     series_EC50_data = df_allp.loc[:,c].dropna()
-        #                 elif norm_dataset == "_norm":
+        #                 elif norm_dataset == "_normalised":
         #                     # find the sample longname that is marked "True" as a standard
         #                     standard_name = samplenames_selected[samplenames_selected["standard for normalisation?"] == True].index[0]
         #                     # find the sSNum (index number) of the standard
@@ -880,7 +880,7 @@ def setup_normalisation(df_samplenames, df_allp):
     df_samplenames : pandas DataFrame
         Dataframe containing the samplenames and column identifying the sample for normalisation.
     df_allp : pandas Dataframe
-        Dataframe for all individual EC50 datapoints from all experiments marked as "TRUE" in the run_gather
+        Dataframe for all individual EC50 datapoints from all experiments marked as "TRUE" in the run_gatherer
         column of the settings file. Includes individual values for samples found twice in a single experiment.
         index : unique sample numbers (sSnum)
         columns: experiment names (e.g. "Mon_23.05", "Tue_24.05", "Wed_25.05")
@@ -891,8 +891,8 @@ def setup_normalisation(df_samplenames, df_allp):
     conduct_normalisation : boolean
         If True, all necessary requirements for normalisation OF THAT DATASET are found, and it should proceed.
     list_norm_datasets : list
-        Suffix for the datasets, e.g. ["_nonnorm", "_norm"] if conduct_normalisation is True
-        If conduct_normalisation is False, will contain a suffix for a single, non-normalised dataset, ["_nonnorm"]
+        Suffix for the datasets, e.g. ["", "_normalised"] if conduct_normalisation is True
+        If conduct_normalisation is False, will contain a suffix for a single, non-normalised dataset, [""]
     """
 
     # if any of the sample names with valid EC50 data extracted from output files are listed in the settings file
@@ -909,17 +909,17 @@ def setup_normalisation(df_samplenames, df_allp):
                 # this particular experiment can be normalised to a standard
                 conduct_normalisation = True
                 # prepare suffixes for the filenames that will include both non-normalised and normalised data
-                list_norm_datasets = ["_nonnorm", "_norm"]
+                list_norm_datasets = ["", "_normalised"]
             elif n_standards_labelled_as_True > 1:
                 raise ValueError("Multiple samples are labelled as standards for normalisation. "
                                  "Only a single sample can be labelled as a standard."
                                  "Please check the samplenames tab of your settings file.")
         else:
             conduct_normalisation = False
-            list_norm_datasets = ["_nonnorm"]
+            list_norm_datasets = [""]
     else:
         conduct_normalisation = False
-        list_norm_datasets = ["_nonnorm"]
+        list_norm_datasets = [""]
         print("Note: None of the samples with valid EC50 values was found in the samples tab of the settings file. "
               "Sample ordering and normalisation to a standard will not be conducted.")
     return conduct_normalisation, list_norm_datasets

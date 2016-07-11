@@ -73,7 +73,7 @@ Using ECCpy requires only the following:
 import eccpy
 settings = r"D:\data\ECCpy_settings.xlsx"
 eccpy.run_curvefit(settings)
-eccpy.run_gather(settings)
+eccpy.run_gatherer(settings)
 ```
 
 # Test#
@@ -88,7 +88,7 @@ eccpy.run_gather(settings)
 ![curve_fit_output_sample3](docs/images/curve_fit_output_sample3.png)
 ![generated_data_0EC50_analysis_fig](docs/images/generated_data_0EC50_analysis_fig.png)
 
-<h3>run_gather program</h3>
+<h3>run_gatherer program</h3>
  - combines data from multiple experiments
  - excludes EC50 values that are not of sufficient quality, according to user-defined thresholds
  - bar charts with mean and SEM over all selected experiments

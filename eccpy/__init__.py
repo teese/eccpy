@@ -19,5 +19,5 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 from eccpy.curvefit import run_curvefit
-from eccpy.gather import run_gather
+from eccpy.gather import run_gatherer
 from eccpy.compare_raw import compare_rawdata

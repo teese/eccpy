@@ -14,7 +14,7 @@ def compare_rawdata(settings_excel_file, sample_names, **kwargs):
     Collects output from the "run_curvefit" program, but only for the selected samples.
     Recreates the fitted curves from the four-parameter Hill equation, with the previously calculated hill_constants.
 
-    The output of the compare_rawdata is saved in the same folder as the "run_gather":
+    The output of the compare_rawdata is saved in the same folder as the "run_gatherer":
     ORIGINAL_SUBFOLDER_WITH_SETTINGS_EXCEL_FILE/analysed/todays_date/
 
     Running this script will overwrite any previous files with the same name (i.e., analysed on the same day)
@@ -224,7 +224,7 @@ def compare_rawdata(settings_excel_file, sample_names, **kwargs):
                 ax.set_title("comparison of raw data for selected samples ({e} experiments),  "
                              "{b} {c}".format(b=d_name,c=os.path.split(settings_excel_file)[1],e=n_files_to_analyse))
                 # set xlabel, ylabel
-                ax.set_xlabel(settings["x-axis (dose) label"])
+                ax.set_xlabel("{a} ({b})".format(a=settings["x-axis (dose) label"],b=settings["x-axis (dose) units"]))
                 ax.set_ylabel(settings["y-axis (response) label"],rotation='vertical')
                 # save the figure in png format
                 figpath = os.path.join(outpath, "{b}_{n}{d}.png".format(b=basename,n=fig_name,d=d_name))
