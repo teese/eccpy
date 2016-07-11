@@ -35,7 +35,7 @@ def read_settings_file(settings_excel_file):
 
     Returns
     -------
-    df_settings : pandas DataFrame
+    settings : pandas DataFrame
         Dataframe containing user settings for EC50 calculation and data analysis.
         Created from the "settings" tab of the settings excel file.
     dff : pandas DataFrame
@@ -46,8 +46,10 @@ def read_settings_file(settings_excel_file):
         Dictionary to convert long sample names to shorter ones that are easier to fit into figures.
         Created from the "samplenames" tab of the settings excel file.
     """
-    # convert settings file to pandas dataframe, set the first column "A" as the index
-    df_settings = pd.read_excel(settings_excel_file, sheetname = "settings").set_index("A")
+    # convert settings file to pandas dataframe, set the first column "User-defined variable" as the index
+    df_settings = pd.read_excel(settings_excel_file, sheetname = "settings").set_index("User-defined variable")
+    # extract the column with the settings as a pandas Series
+    settings = df_settings["Value"]
     # read the settings file tab that contains a list of short names to describe the data
     df_samplenames = pd.read_excel(settings_excel_file, sheetname="samplenames")
     # open tab with list of files for analysis as a pandas dataframe (data frame files, dff)
@@ -80,18 +82,19 @@ def read_settings_file(settings_excel_file):
     dff.loc[:,"output_folder"] = dff.loc[:,"ofd"] + "/" + dff.loc[:,"data_file_base"]
     dff.loc[:,"ofd_pdfs"] = dff.loc[:,"output_folder"] + "/" + "pdfs"
     dff.loc[:,"ofd_csv"] = dff.loc[:,"output_folder"] + "/" + "csv"
-    dff.loc[:,"ofd_EC50_eval_excel"] = dff.loc[:,"output_folder"] + "/" + dff.loc[:,"data_file_base"] + "_EC50_evaluation.xlsx"
-    dff.loc[:,"ofd_EC50_eval_csv"] = dff.loc[:,"ofd_csv"]  + "/" + dff.loc[:,"data_file_base"] + "_EC50_evaluation.csv"
-    dff.loc[:,"ofd_EC50_eval_tabsep_csv"] = dff.loc[:,"ofd_csv"]  + "/" + dff.loc[:,"data_file_base"] +  "_EC50_evaluation_tabsep.csv"
-    dff.loc[:,"EC50_analysis_fig_basename"] = dff.loc[:,"output_folder"] + "/" + dff.loc[:,"data_file_base"] + "EC50_analysis_fig"
-    dff.loc[:,"EC50_analysis_fig_basename_pdf"] = dff.loc[:,"ofd_pdfs"] + "/" + dff.loc[:,"data_file_base"] + "EC50_analysis_fig"
-    list_paths_to_normalise = ["data_file_path", "ofd", "output_folder", "ofd_pdfs", "ofd_csv", "ofd_EC50_eval_excel",
-                               "ofd_EC50_eval_csv","ofd_EC50_eval_tabsep_csv"]
+    dff.loc[:,"ofd_curves"] = dff.loc[:, "output_folder"] + "/" + "curves"
+    dff.loc[:,"ofd_EC50_eval_excel"] = dff.loc[:,"output_folder"] + "/" + dff.loc[:,"data_file_base"] + ".xlsx"
+    dff.loc[:,"ofd_EC50_eval_csv"] = dff.loc[:,"ofd_csv"]  + "/" + dff.loc[:,"data_file_base"] + "(comma_separated).csv"
+    dff.loc[:,"ofd_EC50_eval_tabsep_csv"] = dff.loc[:,"ofd_csv"]  + "/" + dff.loc[:,"data_file_base"] +  "(tab_separated).csv"
+    dff.loc[:,"EC50_analysis_fig_basename"] = dff.loc[:,"output_folder"] + "/" + dff.loc[:,"data_file_base"] + "_summary"
+    dff.loc[:,"EC50_analysis_fig_basename_pdf"] = dff.loc[:,"ofd_pdfs"] + "/" + dff.loc[:,"data_file_base"] + "_summary"
+    list_paths_to_normalise = ["data_file_path", "ofd", "output_folder", "ofd_pdfs", "ofd_csv", "ofd_curves",
+                               "ofd_EC50_eval_excel", "ofd_EC50_eval_csv", "ofd_EC50_eval_tabsep_csv"]
     # normalise the paths for selected columns, so that they are appropriate for the operating system
     for path in list_paths_to_normalise:
         dff.loc[:,path] = dff.loc[:,path].apply(lambda x: os.path.normpath(x))
 
-    return df_settings, dff, df_samplenames
+    return settings, dff, df_samplenames
 
 def setup_output_folder(settings_file, subfolder_name):
     """ Defines an output folder based on the path of the settings file.

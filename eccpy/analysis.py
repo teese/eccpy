@@ -25,7 +25,7 @@ import csv
 import os
 import sys
 import ast
-import eccpy.settings as settings
+import eccpy.settings as eccpysettings
 import eccpy.tools as tools
 
 # show wide pandas dataframes when using print function
@@ -97,16 +97,16 @@ def run_analysis(settings_excel_file, **kwargs):
     """
     print("\nStarting run_analysis program\n")
     # create output folder for analysed data, define basename
-    outpath, basename = settings.setup_output_folder(settings_excel_file, "analysed")
+    outpath, basename = eccpysettings.setup_output_folder(settings_excel_file, "analysed")
     analysed_data_basename = os.path.join(outpath, basename)
     # add the relevant paths to the data files to the dataframe for files (dff)
-    df_settings, dff, df_samplenames = settings.read_settings_file(settings_excel_file)
+    settings, dff, df_samplenames = eccpysettings.read_settings_file(settings_excel_file)
     # set the long sample name as the index
     df_samplenames.set_index("long name", inplace = True)
     # create t20 colour list
     t20 = tools.setup_t20_colour_list()
     # extract list of adjusted datasets for analysis
-    datasets = ast.literal_eval(df_settings.loc["adjust.datasets", "B"])
+    datasets = ast.literal_eval(settings["adjust.datasets"])
     """
     COLLECT THE EC50 VALUES FROM ALL THE OUTPUT FILES
     """
@@ -341,7 +341,7 @@ def run_analysis(settings_excel_file, **kwargs):
                 # # bar_ax.set_ylabel("EC50 (ug/ml)")
                 # # set the ylabel extension string
                 # if norm_dataset == "_nonnorm":
-                #     dose_units  = df_settings.loc["x-axis (dose) units","B"]
+                #     dose_units  = settings["x-axis (dose) units"]
                 # elif norm_dataset == "_norm":
                 #     samplenames_selected = df_samplenames.loc[df_allp.longname, :]
                 #     # find the sample longname that is marked "True" as a standard
@@ -357,9 +357,9 @@ def run_analysis(settings_excel_file, **kwargs):
                 # else:
                 #     raise TypeError("dataset for standardisation{} is not recognised".format(norm_dataset))
 
-                # ylabel_str = "{a}{b}, {c} ({d})".format(a=df_settings.loc["calculation_type","B"],
-                #                       b=str(df_settings.loc["percentage_response","B"]),
-                #                       c=df_settings.loc["x-axis (dose) label","B"],
+                # ylabel_str = "{a}{b}, {c} ({d})".format(a=settings["calculation_type"],
+                #                       b=str(settings["percentage_response"]),
+                #                       c=settings["x-axis (dose) label"],
                 #                       d=dose_units)
                 # bar_ax.set_ylabel(ylabel_str)
 
@@ -385,7 +385,7 @@ def run_analysis(settings_excel_file, **kwargs):
 
                 # create a string for the dose units (e.g. "mg/L", or "% positive control")
                 if norm_dataset == "_nonnorm":
-                    dose_units  = df_settings.loc["x-axis (dose) units","B"]
+                    dose_units  = settings["x-axis (dose) units"]
                 elif norm_dataset == "_norm":
                     samplenames_selected = df_samplenames.loc[df_allp.longname, :]
                     # find the sample longname that is marked "True" as a standard
@@ -400,9 +400,9 @@ def run_analysis(settings_excel_file, **kwargs):
                     dose_units = "% {}".format(standard_name_short)
                 else:
                     raise TypeError("dataset for standardisation{} is not recognised".format(norm_dataset))
-                ylabel_str = "{a}{b}, {c} ({d})".format(a=df_settings.loc["calculation_type","B"],
-                                      b=str(df_settings.loc["percentage_response","B"]),
-                                      c=df_settings.loc["x-axis (dose) label","B"],
+                ylabel_str = "{a}{b}, {c} ({d})".format(a=settings["calculation_type"],
+                                      b=str(settings["percentage_response"]),
+                                      c=settings["x-axis (dose) label"],
                                       d=dose_units)
 
                 # iterate through the experiment number (exp_nr) and columns (c) in the dataframe
@@ -626,7 +626,7 @@ def run_analysis(settings_excel_file, **kwargs):
                 # bar_ax.set_ylabel("EC50 (ug/ml)")
                 # set the ylabel extension string
                 if norm_dataset == "_nonnorm":
-                    dose_units  = df_settings.loc["x-axis (dose) units","B"]
+                    dose_units  = settings["x-axis (dose) units"]
                 elif norm_dataset == "_norm":
                     samplenames_selected = df_samplenames.loc[df_allp.longname, :]
                     # find the sample longname that is marked "True" as a standard
@@ -642,9 +642,9 @@ def run_analysis(settings_excel_file, **kwargs):
                 else:
                     raise TypeError("dataset for standardisation{} is not recognised".format(norm_dataset))
 
-                ylabel_str = "{a}{b}, {c} ({d})".format(a=df_settings.loc["calculation_type","B"],
-                                      b=str(df_settings.loc["percentage_response","B"]),
-                                      c=df_settings.loc["x-axis (dose) label","B"],
+                ylabel_str = "{a}{b}, {c} ({d})".format(a=settings["calculation_type"],
+                                      b=str(settings["percentage_response"]),
+                                      c=settings["x-axis (dose) label"],
                                       d=dose_units)
                 barnorm_ax.set_ylabel(ylabel_str)
 
@@ -841,10 +841,10 @@ def run_analysis(settings_excel_file, **kwargs):
         #             scat_ax.set_xlim(-0.5, df_allp.shape[0])
         #
         #             # set the y-axis title
-        #             scat_ax.set_ylabel("{a}{b}, {c} ({d}){e}".format(a=df_settings.loc["calculation_type","B"],
-        #                                   b=str(df_settings.loc["percentage_response","B"]),
-        #                                   c=df_settings.loc["x-axis (dose) label","B"],
-        #                                   d=df_settings.loc["x-axis (dose) units","B"],
+        #             scat_ax.set_ylabel("{a}{b}, {c} ({d}){e}".format(a=settings["calculation_type"],
+        #                                   b=str(settings["percentage_response"]),
+        #                                   c=settings["x-axis (dose) label"],
+        #                                   d=settings["x-axis (dose) units"],
         #                                   e=dose_units))
         #             # add legend and title
         #             scat_ax.set_title("analysed data ({e} experiments),  "
@@ -982,7 +982,7 @@ def compare_rawdata(settings_excel_file, sample_names, **kwargs):
                              "list_output_fig_names. Please check your list of samples.")
 
     # create output folder and output file basename
-    outpath, basename = settings.setup_output_folder(settings_excel_file, "compare_raw")
+    outpath, basename = eccpysettings.setup_output_folder(settings_excel_file, "compare_raw")
     if not os.path.exists(outpath):
         os.mkdir(outpath)
     # setup tableau20 colour list
@@ -990,7 +990,7 @@ def compare_rawdata(settings_excel_file, sample_names, **kwargs):
     # add black (k) to the front of the list
     t20.insert(0,"0.5")
     # add the relevant paths to the data files to the dataframe for files (dff)
-    df_settings, dff, df_samplenames = settings.read_settings_file(settings_excel_file)
+    settings, dff, df_samplenames = eccpysettings.read_settings_file(settings_excel_file)
     # create a list of unique markers for the scattergram
     markerlist = [".",",","o","v","^","<",">","1","2","3","4","8","s","p","*","h","H","+","x","D","d","|","_"]
     # extend the list, in the unlikely case that someone has many replicates
@@ -1002,7 +1002,7 @@ def compare_rawdata(settings_excel_file, sample_names, **kwargs):
     # define xycoordinates for later annotations
     xyc = "axes fraction"
     # extract list of adjusted datasets for analysis
-    datasets = ast.literal_eval(df_settings.loc["adjust.datasets", "B"])
+    datasets = ast.literal_eval(settings["adjust.datasets"])
 
     # create boolean
     at_least_one_sample_found_in_selected_datafiles = False
@@ -1136,8 +1136,8 @@ def compare_rawdata(settings_excel_file, sample_names, **kwargs):
                 ax.set_title("comparison of raw data for selected samples ({e} experiments),  "
                              "{b} {c}".format(b=d_name,c=os.path.split(settings_excel_file)[1],e=n_files_to_analyse))
                 # set xlabel, ylabel
-                ax.set_xlabel(df_settings.loc["x-axis (dose) label","B"])
-                ax.set_ylabel(df_settings.loc["y-axis (response) label","B"],rotation='vertical')
+                ax.set_xlabel(settings["x-axis (dose) label"])
+                ax.set_ylabel(settings["y-axis (response) label"],rotation='vertical')
                 # save the figure in png format
                 figpath = os.path.join(outpath, "{b}_{n}{d}.png".format(b=basename,n=fig_name,d=d_name))
                 fig.savefig(figpath, format = "png", dpi = 150)

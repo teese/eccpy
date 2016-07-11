@@ -26,7 +26,7 @@ import os
 import csv
 import sys
 import ast
-import eccpy.settings as settings
+import eccpy.settings as eccpysettings
 import eccpy.judgefit as judgefit
 import eccpy.tools as tools
 
@@ -84,7 +84,7 @@ def run_curvefit(settings_excel_file):
     """
 
     # add the relevant paths to the data files to the dataframe for files (dff)
-    df_settings, dff, df_samplenames = settings.read_settings_file(settings_excel_file)
+    settings, dff, df_samplenames = eccpysettings.read_settings_file(settings_excel_file)
         # create t20 colour list
     t20 = tools.setup_t20_colour_list()
 
@@ -96,7 +96,7 @@ def run_curvefit(settings_excel_file):
         print("Starting run_curvefit program for selected samples.\n")
         for fn in dff.loc[dff["run curvefit"] == True].index:
             print("output_pdf_folder", dff.loc[fn, "ofd_pdfs"])
-            df_dose_all = calc_EC50(fn, dff, df_settings, t20)
+            df_dose_all = calc_EC50(fn, dff, settings, t20)
         return df_dose_all
     else:
         print("None of the datafiles are marked TRUE for 'run curvefit'. Suggest checking the excel settings file.")
@@ -104,7 +104,7 @@ def run_curvefit(settings_excel_file):
     print("\nrun_curvefit program is finished.")
 
 
-def calc_EC50(fn, dff, df_settings, t20):
+def calc_EC50(fn, dff, settings, t20):
     """ Calculates multiple EC50 values from a single input data file.
 
     Parameters
@@ -115,7 +115,7 @@ def calc_EC50(fn, dff, df_settings, t20):
         Dataframe for Files. Contains all the paths for input and output files.
         Created from the "files" tab of the settings excel file.
         Contains the "True" / "False" list of input files to analyse in that run.
-    df_settings : pandas DataFrame
+    settings : pandas DataFrame
         Parameter settings for fitting, and data analysis
     t20 : list
         Tableau20 list of colours
@@ -144,22 +144,22 @@ def calc_EC50(fn, dff, df_settings, t20):
     """
     # define datasets that have been adjusted before attempting fitting ("_orig" is default, "_ful", "fixed upper limit"
     #  is for specific LD50 analyses
-    datasets = ast.literal_eval(df_settings.loc["adjust.datasets", "B"])
+    datasets = ast.literal_eval(settings["adjust.datasets"])
 
     # extract the data file path, method (e.g. EC50), expected curveshape (S or Z), etc. from settings file
     data_file = dff.loc[fn, "response data file"]
     print(data_file)
-    method = "{ct}{pr}".format(ct=df_settings.loc["calculation_type","B"],
-                               pr=str(df_settings.loc["percentage_response","B"]))
-    dose_response_curveshape = df_settings.loc["dose_response_curveshape", "B"]
-    doselabel = df_settings.loc["x-axis (dose) label", "B"]
-    doseunits = df_settings.loc["x-axis (dose) units","B"]
+    method = "{ct}{pr}".format(ct=settings["calculation_type"],
+                               pr=str(settings["percentage_response"]))
+    dose_response_curveshape = settings["dose_response_curveshape"]
+    doselabel = settings["x-axis (dose) label"]
+    doseunits = settings["x-axis (dose) units"]
 
     # create new output file directories, if they don't exist already
-    list_paths = [dff.loc[fn, "output_folder"], dff.loc[fn, "ofd_pdfs"], dff.loc[fn, "ofd_csv"]]
-    for path in list_paths:
-        if not os.path.exists(path):
-            os.makedirs(path)
+    dir_columns = ["output_folder", "ofd_pdfs", "ofd_csv", "ofd_curves"]
+    for column in dir_columns:
+        if not os.path.exists(dff.loc[fn, column]):
+            os.makedirs(dff.loc[fn, column])
 
     # examine the input file to confirm integrity, correct datatype, etc
     dff = examine_input_datafile(fn, dff)
@@ -300,7 +300,7 @@ def calc_EC50(fn, dff, df_settings, t20):
         dfe.loc["sample_name", sLet] = sample_name
 
         # set up the path for the image files to be saved in
-        fig0_single_sample_png = os.path.join(dff.loc[fn,"output_folder"], "%s " % sLet + sample_name) + ".png"
+        fig0_single_sample_png = os.path.join(dff.loc[fn,"ofd_curves"], "%s " % sLet + sample_name) + ".png"
         fig0_single_sample_pdf  = os.path.join(dff.loc[fn,"ofd_pdfs"], "%s " % sLet + sample_name) + ".pdf"
 
         #reindex so that only rows that contain data in both dataframes (i.e. dose and response data) are kept for analysis
@@ -327,8 +327,8 @@ def calc_EC50(fn, dff, df_settings, t20):
 
         #make an array of >250 datapoints representing the x-axis of the curve
         min = 0
-        max = df_settings.loc["fitted_curve_xaxis_max","B"]
-        n_datapoints = df_settings.loc["fitted_curve_n_datapoints","B"]
+        max = settings["fitted_curve_xaxis_max"]
+        n_datapoints = settings["fitted_curve_n_datapoints"]
         dfe.loc["x_fitted_norm_orig", sLet] = np.linspace(min, max, n_datapoints)
         dfe.loc["n_doseconc_tested", sLet] = len(x_orig)
 
@@ -345,10 +345,10 @@ def calc_EC50(fn, dff, df_settings, t20):
             dfe.loc["x_ful", sLet] = dfe.loc["x_orig", sLet]
             dfe.loc["x_fitted_norm_ful", sLet] = dfe.loc["x_fitted_norm_orig", sLet]
 
-            ful_max = df_settings.loc["adjust.ful.yaxis_fixed_upper_limit_max","B"]
-            ful_min = df_settings.loc["adjust.ful.yaxis_fixed_upper_limit_min","B"]
+            ful_max = settings["adjust.ful.yaxis_fixed_upper_limit_max"]
+            ful_min = settings["adjust.ful.yaxis_fixed_upper_limit_min"]
 
-            # find where the first datapoint drops below the df_settings.loc["adjust.ful.yaxis_fixed_upper_limit_min","B"]
+            # find where the first datapoint drops below the settings["adjust.ful.yaxis_fixed_upper_limit_min"]
             if y_orig.min() < ful_min:
                 index_y_ful = np.min(np.where(y_orig < ful_min))
             else:
@@ -422,7 +422,7 @@ def calc_EC50(fn, dff, df_settings, t20):
         #           |____|____|
 
         # Determine which datasets are going to be plotted
-        datasets = ast.literal_eval(df_settings.loc["adjust.datasets", "B"])
+        datasets = ast.literal_eval(settings["adjust.datasets"])
 
         # set the subplot number on the canvas
         Plot_Nr = 1
@@ -433,7 +433,7 @@ def calc_EC50(fn, dff, df_settings, t20):
             axarr[0,0].scatter(x_orig, dfe.loc["y{}".format(d), sLet], color=co[n], s=sd[d], label=d_name[1:], alpha=al)
         # set xlabel, ylabel, title, etc
         axarr[0,0].set_xlabel("{a} ({b})".format(a=doselabel, b=doseunits), fontsize = fig_fontsize)
-        axarr[0,0].set_ylabel(df_settings.loc["y-axis (response) label","B"],rotation='vertical', fontsize = fig_fontsize)
+        axarr[0,0].set_ylabel(settings["y-axis (response) label"],rotation='vertical', fontsize = fig_fontsize)
         axarr[0,0].set_title("%s   %s" %(sLet, sample_name), fontsize = fig_fontsize)
         axarr[0,0].grid(True, color = '0.75')
         # set the limit of the y-axis to 1 + 0.1, if all datapoints are very low
@@ -472,10 +472,10 @@ def calc_EC50(fn, dff, df_settings, t20):
         #######################################################################################################
 
         # count the number of orig response datapoints above and below the "yaxis upper-lower cutoff" (yulc) value
-        dfe.loc["n_resp_dp_below_yulc", sLet] = len(np.where(y_orig < df_settings.loc["yaxis upper-lower cutoff","B"])[0])
-        dfe.loc["n_resp_dp_above_yulc", sLet] = len(np.where(y_orig > df_settings.loc["yaxis upper-lower cutoff","B"])[0])
+        dfe.loc["n_resp_dp_below_yulc", sLet] = len(np.where(y_orig < settings["yaxis upper-lower cutoff"])[0])
+        dfe.loc["n_resp_dp_above_yulc", sLet] = len(np.where(y_orig > settings["yaxis upper-lower cutoff"])[0])
 
-        if dfe.loc["n_resp_dp_below_yulc", sLet] < df_settings.loc["min_num_dp_above&below_yulc","B"]:
+        if dfe.loc["n_resp_dp_below_yulc", sLet] < settings["min_num_dp_above&below_yulc"]:
             """The cells are "insuff_lowresp_dp" if any of the following are true
                 - there are less than two datapoints above the live-dead cutoff value
             """
@@ -491,9 +491,9 @@ def calc_EC50(fn, dff, df_settings, t20):
                 dfe.loc["ymin{}".format(d), "%s_okay" % sLet] = False
                 dfe.loc["data_seems_okay{}".format(d),sLet] = False
 
-        elif any([y_orig[1] < df_settings.loc["min_resp_at_2nd_doseconc","B"],
-                 dfe.loc["n_resp_dp_above_yulc", sLet] < df_settings.loc["min_num_dp_above&below_yulc","B"],
-                 y_orig[-2] < df_settings.loc["min_resp_at_2ndlast_doseconc","B"]]):
+        elif any([y_orig[1] < settings["min_resp_at_2nd_doseconc"],
+                 dfe.loc["n_resp_dp_above_yulc", sLet] < settings["min_num_dp_above&below_yulc"],
+                 y_orig[-2] < settings["min_resp_at_2ndlast_doseconc"]]):
             """For high-throughput LD50 calculations, the cells have "insuff_highresp_dp" if any of the following are true:
                 - the y-value of the second datapoint (second dose) is smaller than a fixed minimum value (min_resp_at_2nd_doseconc)
                 - there are less than two datapoints above a fixed value (yaxis upper-lower cutoff)
@@ -582,9 +582,9 @@ def calc_EC50(fn, dff, df_settings, t20):
                 #######################################################################################################
 
                 # obtain the calculation method from the settings file
-                method_calc_y50 = df_settings.loc["method_calc_y50", "B"]
+                method_calc_y50 = settings["method_calc_y50"]
                 # obtain the percentage response used for calculation (e.g. 50 ,for EC50)
-                percentage_response = df_settings.loc["percentage_response", "B"]
+                percentage_response = settings["percentage_response"]
                 # calculate fraction response (i.e. convert EC50 to 0.5)
                 fract_response = percentage_response / 100
 
@@ -695,7 +695,7 @@ def calc_EC50(fn, dff, df_settings, t20):
             #           |____|____|
 
             # Determine which datasets are going to be plotted
-            datasets = ast.literal_eval(df_settings.loc["adjust.datasets", "B"])
+            datasets = ast.literal_eval(settings["adjust.datasets"])
 
             for n, d in enumerate(datasets):
                 # change the dataset name (e.g. "_orig" to "") to an empty string if there is only one dataset for analysis
@@ -770,7 +770,7 @@ def calc_EC50(fn, dff, df_settings, t20):
                 axarr[1,0].annotate(s="normalised data", xy=(0.63,0.8), fontsize=af, xycoords=xyc, color=t20[0])
 
             # analyse the curve fit and data to judge whether the EC50 value is accurate
-            dfe = judgefit.judge_fit(dfe, sLet, df_settings)
+            dfe = judgefit.judge_fit(dfe, sLet, settings)
             # dfe_index = pd.Series(dfe.index)
             # dfe_index_ful = dfe_index[dfe_index.apply(lambda x : "_ful" in x)]
             # dfe_index_orig = dfe_index[dfe_index.apply(lambda x : x[-5:] == "_orig")]
@@ -933,12 +933,12 @@ def calc_EC50(fn, dff, df_settings, t20):
                     axarr[1,0].plot(doseconc_steps_at_EC50,(0,0), color=stepcolour, linestyle="-", lw=2)
 
                 # if the slope at the lowdose is above the chosen cutoff, draw a line on the normalised plot, axarr[1,0]
-                if dfe.loc["saxe_lowdose{}".format(d), sLet] > df_settings.loc["max_lowdose_slope","B"]:
+                if dfe.loc["saxe_lowdose{}".format(d), sLet] > settings["max_lowdose_slope"]:
                     saxe_lowdose_values = dfe.loc["saxe_lowdose_values{}".format(d), sLet]
                     # draw red vertical line showing the slope at the lowdose datapoint
                     axarr[1,0].plot(saxe_lowdose_values[0], saxe_lowdose_values[1], 'r-', lw=2)
                 # if the slope at the highdose is higher than the chosen cutoff, draw a line on tho normalised plot
-                if dfe.loc["saxe_highdose{}".format(d), sLet] > df_settings.loc["max_highdose_slope","B"]:
+                if dfe.loc["saxe_highdose{}".format(d), sLet] > settings["max_highdose_slope"]:
                     saxe_highdose_values = dfe.loc["saxe_highdose_values{}".format(d), sLet]
                     # draw red vertical line showing the slope at the lowdose datapoint
                     axarr[1,0].plot(saxe_highdose_values[0], saxe_highdose_values[1], 'r-', lw=2)
@@ -1083,7 +1083,7 @@ def calc_EC50(fn, dff, df_settings, t20):
             lg.draw_frame(False)
         # set xlabel, ylabel, title, grid, etc
         axarr[r].set_xlabel("{a} ({b})".format(a=doselabel, b=doseunits), fontsize = fig_fontsize)
-        axarr[r].set_ylabel(df_settings.loc["y-axis (response) label","B"],rotation='vertical', fontsize = fig_fontsize)
+        axarr[r].set_ylabel(settings["y-axis (response) label"],rotation='vertical', fontsize = fig_fontsize)
         axarr[r].set_title('{a} data                              {b}'.format(a=d_name[1:],b=data_file),
                                 fontsize = fig_fontsize, x = 0.22)
         axarr[r].grid(True, color = '0.75')
@@ -1154,7 +1154,7 @@ def calc_EC50(fn, dff, df_settings, t20):
         #save figure
         fig.tight_layout()
         fig.savefig(dff.loc[fn,"EC50_analysis_fig_basename"] + d_name + '.png', format='png', dpi=150)
-        fig.savefig(dff.loc[fn,"EC50_analysis_fig_basename_pdf"] + d_name + '.png', format='pdf')
+        fig.savefig(dff.loc[fn,"EC50_analysis_fig_basename_pdf"] + d_name + '.pdf', format='pdf')
 
         if True in list(df_eval_values.loc[:,"EC50_calculable{}".format(d)]):
             #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -1196,7 +1196,7 @@ def calc_EC50(fn, dff, df_settings, t20):
             #save figure
             fig.tight_layout()
             fig.savefig(dff.loc[fn,"EC50_analysis_fig_basename"] + d_name + "_bar" + '_%02d.png'%bar_fig_nr, format='png', dpi=150)
-            fig.savefig(dff.loc[fn,"EC50_analysis_fig_basename_pdf"] + d_name + "_bar" + '_%02d.png'%bar_fig_nr, format='pdf')
+            fig.savefig(dff.loc[fn,"EC50_analysis_fig_basename_pdf"] + d_name + "_bar" + '_%02d.pdf'%bar_fig_nr, format='pdf')
             plt.close('all')
 
     # drop the columns with a large number of datapoints, to reduce size of the output files
@@ -1230,7 +1230,7 @@ def calc_EC50(fn, dff, df_settings, t20):
     writer = pd.ExcelWriter(dff.loc[fn,"ofd_EC50_eval_excel"])#engine='xlsxwriter'
     df_eval_values.to_excel(writer, sheet_name="v_" + data_file[:20])
     df_eval_bool.to_excel(writer, sheet_name="b_" + data_file[:20])
-    df_settings.to_excel(writer, sheet_name="settings")
+    settings.to_frame().to_excel(writer, sheet_name="settings")
     writer.save()
     writer.close()
     print('\n-------------------------------------\n')

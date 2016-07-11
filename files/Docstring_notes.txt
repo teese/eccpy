@@ -42,7 +42,7 @@
         String, to be replaced with a dataframe later.
     df_resp_orig : pandas DataFrame
         Dataframe containing the the original response data.
-    df_settings : pandas DataFrame
+    settings : pandas DataFrame
         Parameter settings for fitting, and data analysis
     EC50_analysis_fig_01 : png (also as pdf)
         Scattergram with all data and sigmoidal curves for that experiment.

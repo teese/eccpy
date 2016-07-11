@@ -22,7 +22,7 @@ import numpy as np
 import ast
 import eccpy.tools as tools
 
-def judge_fit(dfe, sLet, df_settings):
+def judge_fit(dfe, sLet, settings):
     ''' Analyses the fit of the experimental data to a sigmoidal curve.
 
     Parameters
@@ -35,7 +35,7 @@ def judge_fit(dfe, sLet, df_settings):
                                  C) sLet_colour (column for defining text colour in output figures (red for low-quality)
     sLet : string
         Sample letter.
-    df_settings : pandas DataFrame
+    settings : pandas DataFrame
         User-defined settings derived from the settings excel sheet.
         Includes all the relevant user-defined thresholds for the judge_fit scripts.
 
@@ -86,27 +86,27 @@ def judge_fit(dfe, sLet, df_settings):
     # setup cutoffs for judging data quality
     # number datapoints neighbouring the EC50 that are excluded from the highdose and lowdose data selection
     # set higher if you use a large number of dose concentrations
-    n_neighb = df_settings.loc["n_neighb","B"]
+    n_neighb = settings["n_neighb"]
     # maximum standard deviation of the response datapoints at high dose concentration
-    max_std_resp_highdose_dp = df_settings.loc["max_std_resp_highdose_dp","B"]
+    max_std_resp_highdose_dp = settings["max_std_resp_highdose_dp"]
     # maximum standard deviation of the response datapoints at low dose concentration
-    max_std_resp_lowdose_dp = df_settings.loc["max_std_resp_lowdose_dp","B"]
-    min_flat_lowdose_dp = df_settings.loc["min_flat_lowdose_dp","B"]
-    min_flat_highdose_dp = df_settings.loc["min_flat_highdose_dp","B"]
+    max_std_resp_lowdose_dp = settings["max_std_resp_lowdose_dp"]
+    min_flat_lowdose_dp = settings["min_flat_lowdose_dp"]
+    min_flat_highdose_dp = settings["min_flat_highdose_dp"]
 
     # minimum rsquared of the fit from sigmoidal curve to the data
-    min_rsquared = df_settings.loc["min_rsquared","B"]
+    min_rsquared = settings["min_rsquared"]
     # minimum acceptable dase concentration stepsizes. Smaller stepsizes give more accurate EC50 values!
-    max_acceptable_doseconc_stepsize_at_EC50 = df_settings.loc["max_acceptable_doseconc_stepsize_at_EC50","B"]
-    max_recommended_doseconc_stepsize_at_EC50 = df_settings.loc["max_recommended_doseconc_stepsize_at_EC50","B"]
+    max_acceptable_doseconc_stepsize_at_EC50 = settings["max_acceptable_doseconc_stepsize_at_EC50"]
+    max_recommended_doseconc_stepsize_at_EC50 = settings["max_recommended_doseconc_stepsize_at_EC50"]
     # minimum hillslope of the fit from sigmoidal curve to the data (below 1, tends not to be sigmoidal)
-    weak_hillslope_range = ast.literal_eval(df_settings.loc["weak_hillslope_range","B"])
+    weak_hillslope_range = ast.literal_eval(settings["weak_hillslope_range"])
     # minimum value for the end of the curve, on the y-axis (below -1, tends not to be sigmoidal)
-    min_curve_lowresp = df_settings.loc["min_curve_lowresp","B"]
+    min_curve_lowresp = settings["min_curve_lowresp"]
 
     # create a list that contains the database suffixes (_orig for original, _ful for fixed upper limit)
     # datasets = ["_orig", "_ful"]
-    datasets = ast.literal_eval(df_settings.loc["adjust.datasets", "B"])
+    datasets = ast.literal_eval(settings["adjust.datasets"])
     for d in datasets:
         x = np.array(dfe.loc["x{}".format(d), sLet])
         y = np.array(dfe.loc["y{}".format(d), sLet])
@@ -303,8 +303,8 @@ def judge_fit(dfe, sLet, df_settings):
         xnorm_stepsize_mean = xnorm_stepsizes.mean()
         # define the width surrounding the datapoint for the slope measurement
         # calculated as the mean stepsize multiplied by a user value (0.001 to 1.0)
-        width_lowdose_slope = xnorm_stepsize_mean/2 * df_settings.loc["width_lowdose_slope","B"]
-        width_highdose_slope = xnorm_stepsize_mean/2 * df_settings.loc["width_highdose_slope","B"]
+        width_lowdose_slope = xnorm_stepsize_mean/2 * settings["width_lowdose_slope"]
+        width_highdose_slope = xnorm_stepsize_mean/2 * settings["width_highdose_slope"]
         # define the min and max of normalised datapoints (will simply be 0 and 1 for normalised data)
         xnorm_min, xnorm_max = xnorm.min(), xnorm.max()
         # define SAXE lowdose/highdose x-axis datapoints (to the left and right of the original datapoints)
@@ -334,8 +334,8 @@ def judge_fit(dfe, sLet, df_settings):
                                                             [saxe_highdose_y_dp_left, saxe_highdose_y_dp_right]]
 
         # obtain the max allowed values for the slopes
-        max_lowdose_slope = df_settings.loc["max_lowdose_slope","B"]
-        max_highdose_slope = df_settings.loc["max_highdose_slope","B"]
+        max_lowdose_slope = settings["max_lowdose_slope"]
+        max_highdose_slope = settings["max_highdose_slope"]
 
         # check that the calculated slopes of the curve do not exceed the saxe_max_slope
         if saxe_lowdose < max_lowdose_slope:
