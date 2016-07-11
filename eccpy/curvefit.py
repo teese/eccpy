@@ -115,7 +115,7 @@ def calc_EC50(fn, dff, settings, t20):
         Dataframe for Files. Contains all the paths for input and output files.
         Created from the "files" tab of the settings excel file.
         Contains the "True" / "False" list of input files to analyse in that run.
-    settings : pandas DataFrame
+    settings : pandas Series
         Parameter settings for fitting, and data analysis
     t20 : list
         Tableau20 list of colours

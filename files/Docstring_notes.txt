@@ -42,7 +42,7 @@
         String, to be replaced with a dataframe later.
     df_resp_orig : pandas DataFrame
         Dataframe containing the the original response data.
-    settings : pandas DataFrame
+    settings : pandas Series
         Parameter settings for fitting, and data analysis
     EC50_analysis_fig_01 : png (also as pdf)
         Scattergram with all data and sigmoidal curves for that experiment.
@@ -73,6 +73,8 @@
         Whether the format is one of the 96-well formats, which utilizes a separate excel file for the dose conc.
     sample_12_well_plate : bool
         Whether the data utilises the 12-well format, which contains dose and response data in a single excel file.
+    settings : pandas Series
+        Parameter settings for fitting, and data analysis
     settings_excel_file : filepath
         Settings file containing the list of datafiles for analysis, and also chosen parameters
     t20 : list

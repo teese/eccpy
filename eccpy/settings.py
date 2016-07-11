@@ -35,7 +35,7 @@ def read_settings_file(settings_excel_file):
 
     Returns
     -------
-    settings : pandas DataFrame
+    settings : pandas Series
         Dataframe containing user settings for EC50 calculation and data analysis.
         Created from the "settings" tab of the settings excel file.
     dff : pandas DataFrame
@@ -64,7 +64,7 @@ def read_settings_file(settings_excel_file):
 
     # convert true-like objects (TRUE, true, WAHR, etc) to python bool True
     dff["run curvefit"] = dff["run curvefit"].apply(tools.convert_truelike_to_bool)
-    dff["run analysis"] = dff["run analysis"].apply(tools.convert_truelike_to_bool)
+    dff["run gatherer"] = dff["run gatherer"].apply(tools.convert_truelike_to_bool)
 
     # the "output_directory" is optional. replace blank "Not a number, NaN" values with an empty string ""
     dff["output file directory"].fillna("", inplace=True)

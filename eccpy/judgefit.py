@@ -35,7 +35,7 @@ def judge_fit(dfe, sLet, settings):
                                  C) sLet_colour (column for defining text colour in output figures (red for low-quality)
     sLet : string
         Sample letter.
-    settings : pandas DataFrame
+    settings : pandas Series
         User-defined settings derived from the settings excel sheet.
         Includes all the relevant user-defined thresholds for the judge_fit scripts.
 
