@@ -20,6 +20,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 import numpy as np
 import pandas as pd
+import csv
+
+def aaa(df_or_series):
+    """ Function for use in debugging.
+    Saves pandas Series or Dataframes to a user-defined csv file.
+    """
+     # convert any series to dataframe
+    if isinstance(df_or_series, pd.Series):
+        df_or_series = df_or_series.to_frame()
+    csv_out = r"D:\data\000_aaa_temp_df_out.csv"
+    df_or_series.to_csv(csv_out, sep=",", quoting=csv.QUOTE_NONNUMERIC)
 
 def hill_eq(hill_constants, x):
     """ Four parameter sigmoidal Hill equation.

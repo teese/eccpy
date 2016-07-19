@@ -440,9 +440,13 @@ def run_gatherer(settings_excel_file, **kwargs):
                         standard_sSnum = df_allp[df_allp.longname == standard_name].index[0]
                         # calculated the average EC50 for the standard
                         standard_EC50 = np.mean(df_allp.loc[standard_sSnum, c])
-                        # calculate the normalised EC50 as a percentage (EC50/standard*100)
-                        series_EC50_data = df_allp.loc[:,c]/standard_EC50*100
-                        series_EC50_data.dropna(inplace=True)
+                        if standard_EC50 != 0.0:
+                            # calculate the normalised EC50 as a percentage (EC50/standard*100)
+                            series_EC50_data = df_allp.loc[:,c]/standard_EC50*100
+                            series_EC50_data.dropna(inplace=True)
+                        else:
+                            print("Normalisation for experiment {} cannot be carried out, as the EC50 of the standard is 0.0. ".format(c))
+                            break
                     ########################################################################################
                     #                                                                                      #
                     #    Add values to a "scatterplot" which has the sample number on the x-axis,          #
