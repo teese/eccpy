@@ -587,42 +587,49 @@ def calc_EC50(fn, dff, settings, t20):
                 # calculate fraction response (i.e. convert EC50 to 0.5)
                 fract_response = percentage_response / 100
 
-                if method_calc_y50 == "y50 = (curve_max - curve_min)*0.5":
+                if method_calc_y50 == "y50 = (curve_max - curve_min)*0.5 + curve_min":
                     if dose_response_curveshape == "S":
                         # define the x-value for curvemin as the first x-value
-                        curvemin = dfe.loc["x{}".format(d),sLet][0]
+                        curvemin = dfe.loc["xnorm{}".format(d),sLet][0]
                         # define the x-value for curvemax as the last x-value
-                        curvemax = dfe.loc["x{}".format(d),sLet][-1]
+                        curvemax = dfe.loc["xnorm{}".format(d),sLet][-1]
                     if dose_response_curveshape == "Z":
                         # define the x-value for curvemin as the last x-value
-                        curvemin = dfe.loc["x{}".format(d),sLet][-1]
+                        curvemin = dfe.loc["xnorm{}".format(d),sLet][-1]
                         # define the x-value for curvemax as the first x-value
-                        curvemax = dfe.loc["x{}".format(d),sLet][0]
+                        curvemax = dfe.loc["xnorm{}".format(d),sLet][0]
                     # use the hill equation to find the y-value of the curve at these positions
                     y50_curvemin = tools.hill_eq(dfe.loc["hill_constants{}".format(d),sLet], curvemin)
                     y50_curvemax = tools.hill_eq(dfe.loc["hill_constants{}".format(d),sLet], curvemax)
                     # define y50 (yvalue at top of curve - yvalue at bottom of the curve) * 0.5 [or 0.9 for EC90, etc.]
-                    y50_norm = (y50_curvemax - y50_curvemin) * fract_response
+                    y50_norm = (y50_curvemax - y50_curvemin) * fract_response + y50_curvemin
+
                 # detect extended curve formula (e.g. "y50 = (extendedcurve|0.2|_max - extendedcurve|0.2|_min)*0.5")
                 elif "extendedcurve" in method_calc_y50 and "|" in method_calc_y50:
-                    xmax = dfe.loc["xmax{}".format(d),sLet]
-                    xmin = dfe.loc["xmin{}".format(d),sLet]
-                    x_range = xmax - xmin
+                    if dose_response_curveshape == "S":
+                        # define the x-value for curvemin as the first x-value
+                        curvemin = dfe.loc["xnorm{}".format(d),sLet][0]
+                        # define the x-value for curvemax as the last x-value
+                        curvemax = dfe.loc["xnorm{}".format(d),sLet][-1]
+                    if dose_response_curveshape == "Z":
+                        # define the x-value for curvemin as the last x-value
+                        curvemin = dfe.loc["xnorm{}".format(d),sLet][-1]
+                        # define the x-value for curvemax as the first x-value
+                        curvemax = dfe.loc["xnorm{}".format(d),sLet][0]
+                    x_range = curvemax - curvemin
+                    # extract the extension (e.g. 0.2, 20% from the text string in the settings file)
                     extension_curvemax = float(method_calc_y50.split("|")[1])
                     extension_curvemin = float(method_calc_y50.split("|")[3])
                     if dose_response_curveshape == "S":
                         # define the x-value for curvemin as the first x-value, minus the xrange * extension
-                        curvemin = dfe.loc["x{}".format(d),sLet][0] - x_range * extension_curvemin
+                        curvemin = dfe.loc["xnorm{}".format(d),sLet][0] - x_range * extension_curvemin
                         # define the x-value for curvemax as the last x-value
-                        curvemax = dfe.loc["x{}".format(d),sLet][-1] + x_range * extension_curvemax
+                        curvemax = dfe.loc["xnorm{}".format(d),sLet][-1] + x_range * extension_curvemax
                     if dose_response_curveshape == "Z":
                         # define the x-value for curvemin as the last x-value
-                        curvemin = dfe.loc["x{}".format(d),sLet][-1] + x_range * extension_curvemax
+                        curvemin = dfe.loc["xnorm{}".format(d),sLet][-1] + x_range * extension_curvemax
                         # define the x-value for curvemax as the first x-value
-                        curvemax = dfe.loc["x{}".format(d),sLet][0] - x_range * extension_curvemin
-                    # use the equation to calculate the respective y-values in the curve
-                    # xxxxxxxxxxxxxxxxx REPEAT OF D LOOP HERE, WHY??
-                    # for d in datasets:
+                        curvemax = dfe.loc["xnorm{}".format(d),sLet][0] - x_range * extension_curvemin
                     # use the hill equation to find the y-value of the curve at these positions
                     y50_curvemin = tools.hill_eq(dfe.loc["hill_constants{}".format(d),sLet], curvemin)
                     y50_curvemax = tools.hill_eq(dfe.loc["hill_constants{}".format(d),sLet], curvemax)
@@ -653,7 +660,6 @@ def calc_EC50(fn, dff, settings, t20):
                 dfe.loc["curve_min_norm{}".format(d),sLet] = dfe.loc["y_fitted_norm{}".format(d),sLet].min()
 
                 #dfe.loc["EC50_norm_bq{}".format(d),"%s_okay" % sLet]
-
                 brentq_out_tuple = calc_EC50_brent_eq(sLet, sample_name, dfe.loc["hill_constants{}".format(d), sLet],
                                                       dfe.loc["y50_norm{}".format(d), sLet])
 
@@ -944,7 +950,6 @@ def calc_EC50(fn, dff, settings, t20):
 
             else:
                 # optional: print the dataframe showing which parameters are not acceptable
-                #print(dfe.loc[dfe["%s_okay" % sLet] == False])
                 EC50 = dfe.loc["EC50{}".format(d),sLet]
                 if isinstance(EC50, str):
                     # define x_position of annotation. Place the orig at around 0.6, & 2nd dataset(_ful) at around 0.3
@@ -1354,6 +1359,15 @@ def standardise_doseconc_data(fn, dff, df_dose_orig, df_resp_all, data_file_path
             # drop any rows that are completely empty
             df_dose_data = df_dose_data.dropna(how="all")
             df_resp_data = df_resp_data.dropna(how="all")
+
+            # currently read_excel doesn't allow duplicate columns, adding .1, .2, .3 at the end of the column names
+            # see https://github.com/pydata/pandas/issues/10523
+            # in this case, if the secondlast character of the column name (sample name) is ".", remove the .1, .2 etc
+            # this allows the same sample to be analysed multiple times in the same experiment
+            # but will give errors if someone actually has a period (".") in the sample name
+            remove_dup_numbers = lambda x : ".".join(x.split(".")[:-1]) if "." in x[-3:] else x
+            df_resp_data.columns = pd.Series(df_resp_data.columns).apply(remove_dup_numbers)
+            df_dose_data.columns = pd.Series(df_dose_data.columns).apply(remove_dup_numbers)
 
             # check if the column names are exactly the same
             # People also often have names that are inconsistent between the dose and the response tabs.
