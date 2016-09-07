@@ -42,11 +42,11 @@ def run_curvefit(settings_excel_file):
 
     Parameters
     ----------
-    settings_excel_file : filepath
+    settings_excel_file : str
         Path of settings file containing the list of datafiles for analysis, and also chosen user parameters.
 
     Saved Files and Figures
-    -------
+    -----------------------
     fig0_single_sample_png : png (also as pdf)
         Fitted sigmoidal curve for an individual sample. Contains details regarding the
         automatic judement as to whether the "data_needs_checking" or whether the data seems okay. Contains curves
