@@ -871,7 +871,7 @@ def run_gatherer(settings_excel_file, **kwargs):
 
         return df_allp, dff
     else:
-        print("\nNo files are selected for analysis! Double-check TRUE/FALSE columns in settings file.")
+        print("\nNo files are selected for the run_gatherer program. Double-check TRUE/FALSE columns in settings file.")
         return "no files selected", "no files selected"
 
 def setup_normalisation(df_samplenames, df_allp):

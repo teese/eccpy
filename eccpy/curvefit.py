@@ -224,6 +224,10 @@ def calc_EC50(fn, dff, settings, t20):
 
         # create new DataFrame for Sample names (dfS)
         dfS = pd.read_excel(dose_conc_excel_path, sheetname="samples", index_col=0)
+        # replace original index with the resp_assaytype
+        dfS["orig_index"] = dfS.index
+        assert resp_assaytype in dfS.columns
+        dfS.set_index(resp_assaytype, drop=False, inplace=True)
 
         # Match "Contains_Data" between the samples tab (dfS), and the XxdoseYsample tab (df_dose_all)
         # First, convert all "true-like" to python bool. (and anything else to False)
@@ -248,33 +252,20 @@ def calc_EC50(fn, dff, settings, t20):
                                                                                 b=resp_assaytype,
                                                                                 c=df_dose_all_Contains_Data,
                                                                                 d=dfS_Contains_Data))
-        #reindex so the selected columns appear first. change all content to strings.
-        selected_cols = ["samples", "Contains_Data"]
-        dfS = tools.reindex_df_so_selected_cols_are_first(dfS, selected_cols).astype(str)
         # create a list of the samples that is the same number of rows as df_dose_all (original dfS index is ignored)
         n_rows_df_dose_all = df_dose_all.shape[0]
-        dfS_samplelist = list(dfS.samples)[0:n_rows_df_dose_all]
-        # transfer sample names to dataframes with dose concentrations & response values (pasted sequentially. Order must match!)
-        df_dose_all['samples'] = dfS_samplelist
-        df_resp_all['samples'] = dfS_samplelist
+        # transfer sample names to dataframes with dose concentrations & response values
+        series_of_sample_names_with_standard_AA_AB_index = dfS.loc[dfS.Contains_Data]["samples"]
+        df_dose_all['samples'] = series_of_sample_names_with_standard_AA_AB_index
+        df_resp_all['samples'] = series_of_sample_names_with_standard_AA_AB_index
 
     # create a view on the dataframes, so that it only shows the microplate data manually marked as "Contains_Data" = True
     dfdose = df_dose_all[df_dose_all.Contains_Data == True].copy()
     dfresp = df_resp_all[df_resp_all.Contains_Data == True].copy()
-    # delete the two columns containing text, rather than data for plotting ("Contains_Data" and "samples")
-    dfdose = dfdose.drop(["Contains_Data", "samples"], axis = 1)
-    dfresp.drop(["Contains_Data", "samples"], axis=1, inplace=True)
     dict_dfe = {}
 
-    # #set up a single figure to contain 2 subplots
-    # n_plots_per_fig = 4
-    # number of rows and columns for plots in the figure
-    # nrows = 2
-    # ncols = 1
-    # # create a dictionary that automatically gives the indices within subplots, based on the "Plot_Nr"
-    # dict_organising_subplots = tools.create_dict_organising_subplots(n_plots_per_fig,n_rows=nrows)
     # determine the longest sample name
-    sample_name_len_max = df_dose_all.samples.apply(lambda x : len(x)).max()
+    sample_name_len_max = df_dose_all.samples.str.len().max()
 
     #set the fontsize for the figure
     fig_fontsize = 6
@@ -291,11 +282,10 @@ def calc_EC50(fn, dff, settings, t20):
         # There will be a new dfe for each sample number. Each dfe will be added to a dictionary, which is then
         # converted to df_eval
         dfe = pd.DataFrame()
-        #
         dfe.loc["sLet", sLet] = sLet
         dfe.loc["sNum", sLet] = sNum
         # obtain the name for that sample
-        sample_name = str(df_dose_all.samples[sNum])
+        sample_name = str(dfdose.loc[sLet, "samples"])
         dfe.loc["sample_name", sLet] = sample_name
 
         # set up the path for the image files to be saved in
@@ -309,10 +299,18 @@ def calc_EC50(fn, dff, settings, t20):
         cols_with_data_in_both_x_and_y = index_dfs.intersection(dfdose.loc[sLet,:].dropna().index)
         # reindex to drop the columns with text or boolean values
         x_orig = dfdose.loc[sLet,:].reindex(index = cols_with_data_in_both_x_and_y)
+        # drop the two text columns, Contains_Data and samples (sample names)
+        x_orig.drop(["Contains_Data", "samples"], inplace=True)
+        # convert dtype to float
+        x_orig = x_orig.astype(float)
         # add the original x values to the output dataframe
         dfe.loc["x",sLet] = list(x_orig)
         # select the original y (response) values
-        y_orig = np.array(dfresp.loc[sLet,:].reindex(index = cols_with_data_in_both_x_and_y))
+        y_orig = dfresp.loc[sLet,:].reindex(index = cols_with_data_in_both_x_and_y)
+        # drop the two text columns, Contains_Data and samples (sample names)
+        y_orig.drop(["Contains_Data", "samples"], inplace=True)
+        # convert dtype to float
+        y_orig = y_orig.astype(float)
 
         # add to output dataframe
         dfe.loc["y",sLet] = list(y_orig)
@@ -962,9 +960,10 @@ def calc_EC50(fn, dff, settings, t20):
         for d in datasets:
             EC50 = dfe.loc["EC50{}".format(d),sLet]
             EC50_str_dict[d] =  "%.01f" % EC50 if isinstance(EC50, float) else EC50
-        padding = sample_name_len_max if sample_name_len_max < 45 else 44
-        samplestring = "{sLet} {s:>%s} {m} : " % padding
-        sys.stdout.write("\n" + samplestring.format(sLet=sLet, s=sample_name[:44], m=method))
+        # use % formatting to add the padding for the sample name
+        padding = sample_name_len_max if sample_name_len_max <= 44 else 44
+        samplestring = "\n{sLet} {s:>%s} {m} : " % int(padding)
+        sys.stdout.write(samplestring.format(sLet=sLet, s=sample_name[:44], m=method))
         for n, d in enumerate(datasets):
             data_seems_okay = dfe.loc["data_seems_okay{}".format(d),sLet]
             if data_seems_okay:
@@ -1106,7 +1105,7 @@ def calc_EC50(fn, dff, settings, t20):
             lg.draw_frame(False)
         # set the x-axis limit so that the legend does not hide too many data points
         # find the maximum dose concentration in the whole experiment for that day
-        maxAC = dfdose.max().max()
+        maxAC = x_orig.max().max()
         # # obtain the variable altering the extension of the x-axis
         # x_axis_extension_after_dosemax_in_summ_plot = dff.loc[fn, "x-axis extension in summary fig_0"]
         # #define the limit of the x-axis as the maximum dose conc.
