@@ -582,6 +582,9 @@ def run_gatherer(settings_excel_file, **kwargs):
                     #                  format='png', dpi=300, bbox_extra_artists=(scat_lgd,), bbox_inches='tight')
                     scat_fig.savefig(analysed_data_basename + "_datapoints" + d_name + norm_dataset + '.png',
                                      format='png', dpi=300,bbox_extra_artists=(scat_lgd,), bbox_inches='tight')
+                    if settings["save_as_pdf"] in (True, "TRUE"):
+                        scat_fig.savefig(analysed_data_basename + "_datapoints" + d_name + norm_dataset + '.pdf',
+                                         format='pdf', bbox_extra_artists=(scat_lgd,), bbox_inches='tight')
 
                 # create figure object for the barchart with normalised data (collected from the scatter data)
                 barnorm_fig, barnorm_ax = plt.subplots()
@@ -669,8 +672,9 @@ def run_gatherer(settings_excel_file, **kwargs):
                     # automatically tighten the layout and save figure
                     barnorm_fig.tight_layout()
                     # save the figure
-                    barnorm_fig.savefig(analysed_data_basename + "_bar" + d_name + norm_dataset + '.png',
-                                        format='png', dpi=150)
+                    barnorm_fig.savefig(analysed_data_basename + "_bar" + d_name + norm_dataset + '.png', format='png', dpi=300)
+                    if settings["save_as_pdf"] in (True, "TRUE"):
+                        barnorm_fig.savefig(analysed_data_basename + "_bar" + d_name + norm_dataset + '.pdf', format='pdf')
                 plt.close('all')
 
                 # move sample names to index

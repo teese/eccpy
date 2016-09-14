@@ -155,7 +155,9 @@ def calc_EC50(fn, dff, settings, t20):
     doseunits = settings["x-axis (dose) units"]
 
     # create new output file directories, if they don't exist already
-    dir_columns = ["output_folder", "ofd_pdfs", "ofd_csv", "ofd_curves"]
+    dir_columns = ["output_folder", "ofd_csv", "ofd_curves"]
+    if settings["save_as_pdf"] in (True, "TRUE"):
+        dir_columns.append("ofd_pdfs")
     for column in dir_columns:
         if not os.path.exists(dff.loc[fn, column]):
             os.makedirs(dff.loc[fn, column])
@@ -984,7 +986,8 @@ def calc_EC50(fn, dff, settings, t20):
         #save figure with the fitted curve and calculated EC50 value
         fig.tight_layout()
         fig.savefig(fig0_single_sample_png, format='png', dpi=140)
-        fig.savefig(fig0_single_sample_pdf, format='pdf')
+        if settings["save_as_pdf"] in (True,"TRUE"):
+            fig.savefig(fig0_single_sample_pdf, format='pdf')
         plt.close('all')
         dict_dfe[sLet] = dfe
 
@@ -1157,7 +1160,8 @@ def calc_EC50(fn, dff, settings, t20):
         #save figure
         fig.tight_layout()
         fig.savefig(dff.loc[fn,"EC50_analysis_fig_basename"] + d_name + '.png', format='png', dpi=150)
-        fig.savefig(dff.loc[fn,"EC50_analysis_fig_basename_pdf"] + d_name + '.pdf', format='pdf')
+        if settings["save_as_pdf"] in (True,"TRUE"):
+            fig.savefig(dff.loc[fn,"EC50_analysis_fig_basename_pdf"] + d_name + '.pdf', format='pdf')
 
         if True in list(df_eval_values.loc[:,"EC50_calculable{}".format(d)]):
             #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -1199,7 +1203,8 @@ def calc_EC50(fn, dff, settings, t20):
             #save figure
             fig.tight_layout()
             fig.savefig(dff.loc[fn,"EC50_analysis_fig_basename"] + d_name + "_bar" + '.png', format='png', dpi=150)
-            fig.savefig(dff.loc[fn,"EC50_analysis_fig_basename_pdf"] + d_name + "_bar" + '.pdf', format='pdf')
+            if settings["save_as_pdf"] in (True, "TRUE"):
+                fig.savefig(dff.loc[fn,"EC50_analysis_fig_basename_pdf"] + d_name + "_bar" + '.pdf', format='pdf')
             plt.close('all')
 
     # drop the columns with a large number of datapoints, to reduce size of the output files
