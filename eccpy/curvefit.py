@@ -63,10 +63,11 @@ def run_curvefit(settings_excel_file):
     ofd_EC50_eval_excel : excel file
         Output summary excel file with EC50 values
 
-    Returns
-    -------
-    df_eval_values : pandas DataFrame
-        for development only, returns the dataframe showing the evaluated LD50 values for the experiment.
+    Usage
+    -----
+    import eccpy
+    settings = r"C:\path\to\your\settings\file.xlsx"
+    eccpy.run_curvefit(settings)
 
     Note
     -------
@@ -85,7 +86,7 @@ def run_curvefit(settings_excel_file):
 
     # add the relevant paths to the data files to the dataframe for files (dff)
     settings, dff, df_samplenames = eccpysettings.read_settings_file(settings_excel_file)
-        # create t20 colour list
+    # create t20 colour list
     t20 = tools.setup_t20_colour_list()
 
     """
@@ -95,11 +96,9 @@ def run_curvefit(settings_excel_file):
     if True in list(dff.loc[:, "run curvefit"]):
         print("Starting run_curvefit program for selected samples.\n")
         for fn in dff.loc[dff["run curvefit"] == True].index:
-            df_dose_all = calc_EC50(fn, dff, settings, t20)
-        return df_dose_all
+            calc_EC50(fn, dff, settings, t20)
     else:
         print("None of the datafiles are marked TRUE for 'run curvefit'. Suggest checking the excel settings file.")
-        return None
     print("\nrun_curvefit program is finished.")
 
 
@@ -136,10 +135,6 @@ def calc_EC50(fn, dff, settings, t20):
         Comma separation, English numbering system, with values in quotation marks to increase compatibility.
     ofd_EC50_eval_excel : excel file
         Output summary excel file with EC50 values
-    Returns
-    -------
-    df_eval_values : pandas DataFrame
-        For developers only. Returns the dataframe showing the evaluated LD50 values for the experiment.
     """
     # define datasets that have been adjusted before attempting fitting ("_orig" is default, "_ful", "fixed upper limit"
     #  is for specific LD50 analyses
@@ -193,11 +188,6 @@ def calc_EC50(fn, dff, settings, t20):
     df_dose_all, df_resp_all = standardise_doseconc_data(fn, dff, df_dose_orig, df_resp_all, data_file_path)
 
     if resp_machinetype == "versamax":
-        # the y-value (response) for AA01 will be placed in a new dataframe at df_resp_orig.loc["AA","01"]
-        # # identify index for datapoint
-        # df_resp_orig['index'] = df_resp_orig.Sample.apply(lambda xa : xa[:-2])
-        # # identify columns for datapoint
-        # df_resp_orig['column'] = df_resp_orig.Sample.apply(lambda xb : xb[-2:])
         # create empty dataframe to hold the distributed datapoints
         df_resp_all = pd.DataFrame()
 
@@ -492,7 +482,7 @@ def calc_EC50(fn, dff, settings, t20):
 
         elif any([y_orig[1] < settings["min_resp_at_2nd_doseconc"],
                  dfe.loc["n_resp_dp_above_yulc", sLet] < settings["min_num_dp_above&below_yulc"],
-                 y_orig[-2] < settings["min_resp_at_2ndlast_doseconc"]]):
+                 np.array(y_orig)[-2] < settings["min_resp_at_2ndlast_doseconc"]]):
             """For high-throughput LD50 calculations, the cells have "insuff_highresp_dp" if any of the following are true:
                 - the y-value of the second datapoint (second dose) is smaller than a fixed minimum value (min_resp_at_2nd_doseconc)
                 - there are less than two datapoints above a fixed value (yaxis upper-lower cutoff)
@@ -1229,7 +1219,6 @@ def calc_EC50(fn, dff, settings, t20):
     # convert listlike to stringlists
     df_eval_values = tools.convert_listlike_cols_to_str(df_eval_values, list_arraylike_cols)
 
-
     # df_eval_bool = convert_listlike_cols_to_str(df_eval_bool, list_arraylike_cols)
     # save evaluation dataframe to csv
     df_eval_values.to_csv(dff.loc[fn,"ofd_EC50_eval_csv"], sep=",", quoting=csv.QUOTE_NONNUMERIC)
@@ -1241,8 +1230,10 @@ def calc_EC50(fn, dff, settings, t20):
     settings.to_frame().to_excel(writer, sheet_name="settings")
     writer.save()
     writer.close()
+    # save the settings in the csv folder, so that a permanent record of the settings is kept
+    settings_csv_path = os.path.join(dff.loc[fn, "ofd_csv"], "settings.csv")
+    settings.to_csv(settings_csv_path)
     print('\n-------------------------------------\n')
-    return df_eval_values
 
 def calc_EC50_brent_eq(sLet, sample_name, hill_constants, y50_norm):
     """ Calculates the EC50 from the fitted curve to normalised data.

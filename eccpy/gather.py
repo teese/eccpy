@@ -41,11 +41,14 @@ def run_gatherer(settings_excel_file, **kwargs):
     ----------
     settings_excel_file : filepath
         Settings file containing the list of datafiles for analysis, and also chosen parameters
-
-    Keyword Arguments
-    -----------------
     savefig_with_longnames : boolean
         If True, output figures will be created with both long and short sample names.
+
+    Usage
+    -----
+    import eccpy
+    settings = r"C:\path\to\your\settings\file.xlsx"
+    eccpy.run_gatherer(settings)
 
     Saved Files
     -----------
@@ -67,20 +70,14 @@ def run_gatherer(settings_excel_file, **kwargs):
         3) Adjusted data (e.g. fixed upper limit), long sample names
         4) Adjusted data (e.g. fixed upper limit), short sample names
 
-    Returns
-    -------
-    df_allp: pandas DataFrame
-        For developers only. Dataframe for all individual EC50 datapoints.
-    dff : pandas DataFrame
-        For developers only. Dataframe for Files. Contains all the paths for input and output files.
-        Created from the "files" tab of the settings excel file.
-
     Notes
     -------
+    The gather scripts must be run after run_curvefit, and filepaths must not be changed.
+
     The output of the analysis is saved in the following folder:
     ORIGINAL_SUBFOLDER_WITH_SETTINGS_EXCEL_FILE/analysed/todays_date/
 
-    Running this script will overwrite any previous files with the same name (i.e., analysed on the same day)
+    Running this script will overwrite any previous files with the same name (i.e., analysed on the same day).
 
     The "run_curvefit" program needs to be run to create the relevent output files, before the analysis program
     can be started. Shifting the location of the output files will result in an error.
@@ -291,77 +288,6 @@ def run_gatherer(settings_excel_file, **kwargs):
             for norm_dataset in list_norm_datasets:
                 sys.stdout.write(".")
                 sys.stdout.flush()
-                # BARCHART WITH MEAN REPLACED BY BARCHART CREATED WITH SCATTER DATA, ALLOWING NORMALISATION
-                #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-                #                                                                                                     #
-                #                                       Analysis Barcharts                                            #
-                #               by dataset (ful/orig), by name (long,short), by normalisation (orig/norm)             #
-                #                                                                                                     #
-                #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-                #            _________
-                #           |XXXXXXXXX|          Full Canvas
-                #           |XXXXXXXXX|
-                #           |XXXXXXXXX|
-                #           |XXXXXXXXX|
-
-                # create a new figure object for the barchart
-                #bar_fig, bar_ax = plt.subplots()
-
-                # if norm_dataset == "":
-                #     # define EC50 data (y-axis, height of bars)
-                #     bar_y_meanEC50 = df_for_barchart[col_mean]
-                #     # define y-error bars
-                #     bar_yerr = df_for_barchart[col_SEM]
-                # elif norm_dataset == "_normalised":
-                #     bar_samplenames_selected = df_samplenames.loc[df_for_barchart.longname, :]
-                #     bar_y_meanEC50 = df_for_barchart[col_mean]
-                #     bar_yerr = df_for_barchart[col_SEM]
-                #     # find the sample longname that is marked "True" as a standard
-                #     standard_name = bar_samplenames_selected[bar_samplenames_selected["standard for normalisation?"] == True].index[0]
-                #     standard_EC50 = df_for_barchart.loc[standard_name,col_mean]
-                #     bar_y_meanEC50 = bar_y_meanEC50 / standard_EC50 * 100
-                #     bar_yerr = bar_yerr / standard_EC50 * 100
-
-                # # define the indices of the boxes on the x-axis
-                # bar_x_n_boxes = df_for_barchart.shape[0]
-                # box_indices = range(bar_x_n_boxes)
-                # # define error bar parameters
-                # bar_error_kw = dict(ecolor='k', lw=1, capsize=2, capthick=1)
-                # # plot the data as a barchart
-                # barcontainer = bar_ax.bar(box_indices, bar_y_meanEC50, yerr=bar_yerr, align="center",
-                #                           error_kw=bar_error_kw, color = '#1b9e77')
-                # # set the xticks
-                # bar_ax.set_xticks(box_indices)
-                #
-                # # set the limits of the x-axis
-                # bar_ax.set_xlim([-1, bar_x_n_boxes])
-                # # set the limit of the y-axis
-                # bar_ax.set_ylim(0)
-                # # set the y-axis title
-                # # bar_ax.set_ylabel("EC50 (ug/ml)")
-                # # set the ylabel extension string
-                # if norm_dataset == "":
-                #     dose_units  = settings["x-axis (dose) units"]
-                # elif norm_dataset == "_normalised":
-                #     samplenames_selected = df_samplenames.loc[df_allp.longname, :]
-                #     # find the sample longname that is marked "True" as a standard
-                #     standard_name = samplenames_selected[samplenames_selected["standard for normalisation?"] == True].index[0]
-                #     # check if the standard for normalisation has a short name
-                #     if standard_name in samplenames_selected.index:
-                #         standard_name_short = samplenames_selected.loc[standard_name, "short name"]
-                #     else:
-                #         # use the long name
-                #         standard_name_short = standard_name
-                #     # create a string to extend the y-axis label
-                #     dose_units = "% {}".format(standard_name_short)
-                # else:
-                #     raise TypeError("dataset for standardisation{} is not recognised".format(norm_dataset))
-
-                # ylabel_str = "{a}{b}, {c} ({d})".format(a=settings["calculation_type"],
-                #                       b=str(settings["percentage_response"]),
-                #                       c=settings["x-axis (dose) label"],
-                #                       d=dose_units)
-                # bar_ax.set_ylabel(ylabel_str)
 
                 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
                 #                                                                                                     #
@@ -543,29 +469,11 @@ def run_gatherer(settings_excel_file, **kwargs):
                     list_nametypes = ["shortname"]
 
                 for nametype in list_nametypes:
-                    # # define name on the x-axis
-                    # bar_x_names = df_for_barchart[nametype]
-                    # # set the labels of the x-bar_axis
-                    # bar_ax.set_xticklabels(bar_x_names, rotation=90)
-                    #
-                    # # ax.annotate(s="%s%s" % (nametype,d), xy=(0.015,0.93), fontsize=af, xycoords=xyc)
-                    # bar_ax.set_title("analysed data ({e} experiments),  {a}{b},  {c}".format(a=nametype,b=d,
-                    #                                                   c=os.path.split(settings_excel_file)[1],
-                    #                                                   e=dff.loc[dff["run gatherer"] == True].shape[0]))
-                    # # automatically tighten the layout and save figure
-                    # bar_fig.tight_layout()
-                    # # save the figure
-                    # bar_fig.savefig(analysed_data_basename + "_bar_" +  nametype + d  + norm_dataset + '.png',
-                    #                 format='png', dpi=150)
-
                     # add legend
                     if nametype == "longname":
                         scat_lgd = scat_ax.legend(loc='center left', bbox_to_anchor=(1, 0.5), ncol=1,
                                                   scatterpoints=1,numpoints=1, borderaxespad=1,
                                                   fontsize=fontsize)# mode="expand",
-                        # scat_lgd = scat_ax.legend(loc='lower center', bbox_to_anchor=(0., 1.02, 1., .102), ncol=2,
-                        #                           scatterpoints=1,numpoints=1, borderaxespad=2,
-                        #                           fontsize=fontsize-1)# mode="expand",
                     elif nametype == "shortname":
                         scat_lgd = scat_ax.legend(loc='upper center', bbox_to_anchor=(0.5,-0.15), ncol=2,
                                                   scatterpoints=1,numpoints=1, fontsize=fontsize)
@@ -573,13 +481,7 @@ def run_gatherer(settings_excel_file, **kwargs):
                     scat_xticklabels = list(df_allp[nametype])
                     scat_ax.set_xticklabels(scat_xticklabels, rotation=90)
                     scat_ax.set_title("analysed data ({e} experiments), {b}".format(b=d_name,e=sel_df_allp.shape[1]))
-                    # scat_ax.set_title("analysed data ({e} experiments),  "
-                    #                   "{a}{b}{f},  {c}".format(a=nametype, b=d_name, f=norm_dataset,
-                    #                                            c=settings_name, e=sel_df_allp.shape[1]))
-                    # automatically tighten the layout and save figure
-                    # scat_fig.tight_layout()
-                    # scat_fig.savefig(analysed_data_basename + "_datapoints_" + d + norm_dataset + '.png',
-                    #                  format='png', dpi=300, bbox_extra_artists=(scat_lgd,), bbox_inches='tight')
+                    # save scatter figure
                     scat_fig.savefig(analysed_data_basename + "_datapoints" + d_name + norm_dataset + '.png',
                                      format='png', dpi=300,bbox_extra_artists=(scat_lgd,), bbox_inches='tight')
                     if settings["save_as_pdf"] in (True, "TRUE"):
@@ -687,196 +589,10 @@ def run_gatherer(settings_excel_file, **kwargs):
         writer.save()
         writer.close()
 
-
-        #
-        # '''
-        # AllExperimentsPlots_01-04: Comparison EC50 different experiments. (longnames & shortnames, original and ful)
-        # '''
-        # # plt.rcParams['legend.numpoints'] = 3
-        # # # sort index
-        # # df_allp.sort_index(inplace=True)
-        # # # copy the index with the full sample names to to a new column
-        # # df_allp["longname"] = df_allp.index
-        # # # create a column with the shortened sample names
-        # # df_allp["shortname"] = df_allp.longname.apply(lambda x : samplenames_dict[x] if x in list(samplenames_dict.keys()) else x)
-        # # reorder the index according to desired order in the settings file
-        # # # create a dictionary of the sample order
-        # # sampleorder_dict = dict(zip(df_samplenames.index, df_samplenames["order in figure"]))
-        # # # create a new column with the preferred sample order
-        # # df_allp["sampleorder"] = df_allp.longname.apply(lambda x : sampleorder_dict[x] if x in list(sampleorder_dict.keys()) else x)
-        # # df_allp.sort_values(by="sampleorder", inplace=True)
-        #
-        # # # replace index with a simple range of integers
-        # # df_allp.index = range(df_allp.shape[0])
-        # # # give the index a name
-        # # df_allp.index.name = "sSnum"
-        # # # sort the columns
-        # # df_allp.sort_index(axis=1, inplace=True)
-        # for d in datasets:
-        #     # identify the columns associated with that dataset
-        #     col_contains_d = list(pd.Series(df_allp.columns).apply(lambda x: d in x))
-        #     # select only data for that dataset (e.g. only orig data)
-        #     sel_df_allp = df_allp.loc[:,col_contains_d]
-        #     # set up a boolean to determine if any data is correctly normalised to the standard
-        #     at_least_one_dataset_is_normalised = False
-        #     # create separate figures for the long names, and the short names
-        #     for name in ["longname", "shortname"]:
-        #         conduct_normalisation, list_norm_datasets, \
-        #         at_least_one_dataset_is_normalised = setup_normalisation(df_samplenames,
-        #                                                                  df_allp,
-        #                                                                  at_least_one_dataset_is_normalised)
-        #
-        #         samplenames_selected = df_samplenames.loc[df_allp.longname, :]
-        #
-        #         # if True in list(samplenames_selected["standard for normalisation?"]):
-        #         #     n_standards_labelled_as_True = samplenames_selected["standard for normalisation?"].value_counts()[True]
-        #         # if n_standards_labelled_as_True == 0:
-        #         #     conduct_normalisation = False
-        #         # elif n_standards_labelled_as_True == 1:
-        #         #     conduct_normalisation = True
-        #         #     at_least_one_dataset_is_normalised = True
-        #         # elif n_standards_labelled_as_True > 1:
-        #         #     conduct_normalisation = False
-        #         #     raise ValueError("multiple samples are labelled as standards for normalisation. "
-        #         #                      "Please check the samplenames tab of your settings file.")
-        #         #
-        #         # if "long name" in df_samplenames.columns:
-        #         #     df_samplenames.set_index("long name", inplace = True)
-        #         #
-        #         # samplenames_selected = df_samplenames.loc[df_allp.longname, :]
-        #         # if True in list(samplenames_selected["standard for normalisation?"]):
-        #         #     n_standards_labelled_as_True = samplenames_selected["standard for normalisation?"].value_counts()[True]
-        #         # if n_standards_labelled_as_True == 0:
-        #         #     conduct_normalisation = False
-        #         # elif n_standards_labelled_as_True == 1:
-        #         #     conduct_normalisation = True
-        #         # elif n_standards_labelled_as_True > 1:
-        #         #     conduct_normalisation = False
-        #         #     raise ValueError("multiple samples are labelled as standards for normalisation. "
-        #         #                      "Please check the samplenames tab of your settings file.")
-        #         #
-        #         # if conduct_normalisation:
-        #         #     if at_least_one_dataset_is_normalised:
-        #         #         list_norm_datasets = ["", "_normalised"]
-        #         #     else:
-        #         #         list_norm_datasets = [""]
-        #         # else:
-        #         #     list_norm_datasets = [""]
-        #
-        #         for norm_dataset in list_norm_datasets:
-        #
-        #             # create a new figure with a single plot
-        #             plt.close("all")
-        #             scat_fig, scat_ax = plt.subplots()
-        #             # fig_norm, ax_norm = plt.subplots()
-        #
-        #             # iterate through the columns in the dataframe, each representing a single experiment
-        #             for exp_nr, c in enumerate(sel_df_allp.columns):
-        #                 data_colour = t20[exp_nr]
-        #                 sys.stdout.write(".")
-        #                 sys.stdout.flush()
-        #                 # convert any stringlists lists
-        #                 df_allp.loc[:,c] = df_allp.loc[:,c].apply(lambda x: eval(x) if isinstance(x,str) else x)
-        #                 # convert any lists of strings to lists of floats
-        #                 df_allp.loc[:,c] = df_allp.loc[:,c].apply(lambda x: [float(s) for s in x] if isinstance(x,list) else x)
-        #                 # convert any lists of floats to lists of numpy arrays
-        #                 df_allp.loc[:,c] = df_allp.loc[:,c].apply(lambda x: np.array(x) if isinstance(x,list) else x)
-        #
-        #                 if norm_dataset == "":
-        #                     series_EC50_data = df_allp.loc[:,c].dropna()
-        #                 elif norm_dataset == "_normalised":
-        #                     # find the sample longname that is marked "True" as a standard
-        #                     standard_name = samplenames_selected[samplenames_selected["standard for normalisation?"] == True].index[0]
-        #                     # find the sSNum (index number) of the standard
-        #                     standard_sSnum = df_allp[df_allp.longname == standard_name].index[0]
-        #                     # calculated the average EC50 for the standard
-        #                     standard_EC50 = np.mean(df_allp.loc[standard_sSnum, c])
-        #                     # calculate the normalised EC50 as a percentage (EC50/standard*100)
-        #                     series_EC50_data = df_allp.loc[:,c]/standard_EC50*100
-        #                     series_EC50_data.dropna(inplace=True)
-        #
-        #                 #######################################################
-        #                 #    add_floats_arrays_to_scatterplot
-        #                 #######################################################
-        #                 # set the transparency
-        #                 alpha = 0.5
-        #                 # create a series of bools, describing if the data is a float
-        #                 is_float_series = series_EC50_data.apply(lambda x: isinstance(x,float))
-        #                 # use boolean series to select the float data
-        #                 values_single_sample = series_EC50_data.loc[is_float_series]
-        #                 # create a series of bools, describing if the data is a list
-        #                 is_array_series = series_EC50_data.apply(lambda x: isinstance(x,np.ndarray))
-        #                 # if some of the datapoints are lists (multiple sample replicates in a single experiment)
-        #                 if True in list(is_array_series):
-        #                     # use boolean series to select the data with lists
-        #                     values_mult_sample = series_EC50_data.loc[is_array_series]
-        #                     # the multiple EC50 values belong to a single sample number. Identify list of sample numbers.
-        #                     index_ssNum_with_lists = values_mult_sample.index.tolist()
-        #                     # create a list of xvalues for the scattergram, for multiple samples per day
-        #                     list_xvalues_from_mult = []
-        #                     # create a list of yvalues for the scattergram, for multiple samples per day
-        #                     list_yvalues_from_mult = []
-        #                     # iterate through each selected sample number, associated with multiple EC50 values
-        #                     for sSnum in index_ssNum_with_lists:
-        #                         list_EC50_values = list(values_mult_sample[sSnum])
-        #                         # create corresponding x-axis sample numbers (array of sSnum of length len(values_mult_sample))
-        #                         list_index_values = list(np.ones(len(list_EC50_values))*sSnum)
-        #                         # add x and y values to the lists for all samples
-        #                         list_xvalues_from_mult.extend(list_index_values)
-        #                         list_yvalues_from_mult.extend(list_EC50_values)
-        #
-        #                 xvalues_from_single = list(values_single_sample.index)
-        #                 yvalues_from_single = list(values_single_sample)
-        #
-        #
-        #                 xvalues_all_single_exp = xvalues_from_single + list_xvalues_from_mult
-        #                 yvalues_all_single_exp = yvalues_from_single + list_yvalues_from_mult
-        #
-        #                 # plot the float data as a scattergram (x-axis is the range, resembling a bar or line chart)
-        #                 scat_ax.scatter(xvalues_all_single_exp, yvalues_all_single_exp, color=data_colour, s=40, alpha=alpha, label=c[:-5])
-        #
-        #             #######################################################
-        #             #    format_and_save_analysis_scatterplot
-        #             #######################################################
-        #             # define the x-axis labels (long or short)
-        #             xticklabels = list(df_allp[name])
-        #             settings_name = os.path.split(settings_excel_file)[1]
-        #
-        #             # set the transparency
-        #             alpha = 0.5
-        #             # set the xticks and labels to match the index of df_allp
-        #             scat_ax.set_xticks(np.arange(df_allp.shape[0]))
-        #             scat_ax.set_xticklabels(xticklabels, rotation=90)
-        #             # set the grid to go in between the sample names, as minor xticks
-        #             scat_ax.set_xticks(np.arange(df_allp.shape[0])+0.5, minor=True)
-        #             scat_ax.grid(which='minor', alpha=0.9)
-        #             # set the x axis limits
-        #             scat_ax.set_xlim(-0.5, df_allp.shape[0])
-        #
-        #             # set the y-axis title
-        #             scat_ax.set_ylabel("{a}{b}, {c} ({d}){e}".format(a=settings["calculation_type"],
-        #                                   b=str(settings["percentage_response"]),
-        #                                   c=settings["x-axis (dose) label"],
-        #                                   d=settings["x-axis (dose) units"],
-        #                                   e=dose_units))
-        #             # add legend and title
-        #             scat_ax.set_title("analysed data ({e} experiments),  "
-        #                          "{a}{b}{f},  {c}".format(a=name,b=d,f=norm_dataset,
-        #                                                   c=settings_name,e=sel_df_allp.shape[1]))
-        #             lgd = scat_ax.legend(loc='upper center', bbox_to_anchor=(0.5,-0.1), ncol=2, scatterpoints=1, numpoints =1)
-        #             # automatically tighten the layout and save figure
-        #             scat_fig.tight_layout()
-        #             scat_fig.savefig(analysed_data_basename + "_datapoints_" + name + d_name + norm_dataset + '.png', format='png', dpi=300, bbox_extra_artists=(lgd,), bbox_inches='tight')
-        #
-        #         plt.close("all")
-
         print('\nCollection and analysis of data from multiple experiments is finished.\n'
               'Output files are saved in the following directory:\n{}'.format(outpath))
-
-        return df_allp, dff
     else:
         print("\nNo files are selected for the run_gatherer program. Double-check TRUE/FALSE columns in settings file.")
-        return "no files selected", "no files selected"
 
 def setup_normalisation(df_samplenames, df_allp):
     """ Sets up the normalisation of data for that experiment relative to a control.
@@ -928,6 +644,6 @@ def setup_normalisation(df_samplenames, df_allp):
     else:
         conduct_normalisation = False
         list_norm_datasets = [""]
-        print("Note: None of the samples with valid EC50 values was found in the samples tab of the settings file. "
-              "Sample ordering and normalisation to a standard will not be conducted.")
+        print("Note: Full sample names were used in the output graphs. \n      If you want to shorten sample names, normalise to a control, "
+              "      or reorder samples in the output graph, please check the samples tab of the settings file.")
     return conduct_normalisation, list_norm_datasets
