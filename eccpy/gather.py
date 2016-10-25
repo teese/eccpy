@@ -494,8 +494,8 @@ def run_gatherer(settings_excel_file, **kwargs):
                 # convert index to integer format
                 series_all_exp_redundant.index = series_all_exp_redundant.index.astype(np.int64)
                 # from the redundant index, create a unique, sorted index of sample numbers
-                series_all_exp_redundant_index_uniq = series_all_exp_redundant.index.unique()
-                series_all_exp_redundant_index_uniq.sort()
+                series_all_exp_redundant_index_uniq = pd.Series(series_all_exp_redundant.index.unique())
+                series_all_exp_redundant_index_uniq.sort_values()
                 df_all_exp_nonredundant = pd.DataFrame(index=series_all_exp_redundant_index_uniq)
                 for sSnum_b in series_all_exp_redundant_index_uniq:
                     data_for_that_sSnum = series_all_exp_redundant.loc[sSnum_b]
