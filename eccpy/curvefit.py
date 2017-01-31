@@ -174,6 +174,9 @@ def calc_EC50(fn, dff, settings, t20):
             dose_conc_excelfile = ""
     # define path to file with dose concentrations
     dose_conc_excel_path = os.path.join(dff.loc[fn, "input file directory"], dose_conc_excelfile)
+    # double-check that the dose file is really an excel file
+    if dose_conc_excel_path[-4:] not in [".xls", "xlsx"]:
+        raise ValueError("File with dose concentrations does not end in .xls or .xlsx. ({}) Please check settings file.".format(dose_conc_excel_path))
 
     if resp_machinetype == "versamax" and dff.loc[fn, "resp_datafile_ok"] == True:
         # read versamax text file, convert to dataframe
@@ -499,12 +502,11 @@ def calc_EC50(fn, dff, settings, t20):
                 dfe.loc["ymax{}".format(d), "%s_okay" % sLet] = False
                 dfe.loc["data_seems_okay{}".format(d),sLet] = False
         else:
-
-        #######################################################################################################
-        #                                                                                                     #
-        #                               Fit sigmoidal curve to the data                                       #
-        #                                                                                                     #
-        #######################################################################################################
+            #######################################################################################################
+            #                                                                                                     #
+            #                               Fit sigmoidal curve to the data                                       #
+            #                                                                                                     #
+            #######################################################################################################
 
             #as a starting point, guess the sigmoidal constants
             if dose_response_curveshape == "S":
@@ -1606,6 +1608,8 @@ def examine_input_datafile(fn, dff):
 
     if os.path.exists(data_file_path):
         if resp_datafileformat == "txt":
+            if data_file_path[-4:] != ".txt":
+                raise ValueError("Data file is not a text file. {} does not end in .txt. Please check settings file.".format(data_file_path))
             if resp_machinetype == "versamax" and resp_assaytype in ["8dose12sample", "12dose8sample", "24dose4sample"]:
                 # look for the full response_dataformat string in the text file
                 with open(data_file_path,'r') as f:
