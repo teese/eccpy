@@ -174,9 +174,6 @@ def calc_EC50(fn, dff, settings, t20):
             dose_conc_excelfile = ""
     # define path to file with dose concentrations
     dose_conc_excel_path = os.path.join(dff.loc[fn, "input file directory"], dose_conc_excelfile)
-    # double-check that the dose file is really an excel file
-    if dose_conc_excel_path[-4:] not in [".xls", "xlsx"]:
-        raise ValueError("File with dose concentrations does not end in .xls or .xlsx. ({}) Please check settings file.".format(dose_conc_excel_path))
 
     if resp_machinetype == "versamax" and dff.loc[fn, "resp_datafile_ok"] == True:
         # read versamax text file, convert to dataframe
@@ -191,10 +188,14 @@ def calc_EC50(fn, dff, settings, t20):
     df_dose_all, df_resp_all = standardise_doseconc_data(fn, dff, df_dose_orig, df_resp_all, data_file_path)
 
     if resp_machinetype == "versamax":
+
         # create empty dataframe to hold the distributed datapoints
         df_resp_all = pd.DataFrame()
 
         if resp_assaytype in ["8dose12sample", "12dose8sample", "24dose4sample"]:
+            # double-check that the dose file is really an excel file
+            if dose_conc_excel_path[-4:] not in [".xls", "xlsx"]:
+                raise ValueError("File with dose concentrations does not end in .xls or .xlsx. ({}) Please check settings file.".format(dose_conc_excel_path))
             # define the relevant column name with the response values
             col_resp = "MeanAbsorb"
         elif "ampconc" in resp_assaytype:
