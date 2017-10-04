@@ -968,9 +968,9 @@ def calc_EC50(fn, dff, settings, t20):
                     data_evaluation = "(needs checking)"
                 else:
                     if EC50_str_dict[d] == "insuff_lowresp_dp":
-                        data_evaluation = "(EC50 not calculable, insufficient low reponse datapoints)"
+                        data_evaluation = "(EC50 not calculable, insufficient low response datapoints)"
                     elif EC50_str_dict[d] == "insuff_highresp_dp":
-                        data_evaluation = "(EC50 not calculable, insufficient high reponse datapoints)"
+                        data_evaluation = "(EC50 not calculable, insufficient high response datapoints)"
             sys.stdout.write("{d:>4} = {EC:>5} {eval:>17}".format(d=d_name[1:], EC=EC50_str_dict[d], eval=data_evaluation))
             if n < len(datasets):
                 sys.stdout.write(", ")
