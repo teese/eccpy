@@ -1087,6 +1087,8 @@ def calc_EC50(fn, dff, settings, t20):
                                 fontsize = fig_fontsize, x = 0.22)
         axarr[r].grid(True, color = '0.75')
         # plot the raw datapoints last, as these interfere with the legend
+        ylim_min_list = []
+        ylim_max_list = []
         for sLet in df_eval_values.index:
             sNum = df_eval_values.loc[sLet,'sNum']
             axarr[r].scatter(df_eval_values.loc[sLet,"x{}".format(d)],
@@ -1095,6 +1097,14 @@ def calc_EC50(fn, dff, settings, t20):
                                 alpha = 0.8,
                                 s = 15,
                                 label = sLet)
+            # grab the min and max for the y-values. This is used for ax.set_ylim.
+            ylim_min_list.append(np.array(df_eval_values.loc[sLet,"y{}".format(d)]).min())
+            ylim_max_list.append(np.array(df_eval_values.loc[sLet, "y{}".format(d)]).max())
+
+        lowest_y_datapoint = np.array(ylim_min_list).min()
+        highest_y_datapoint = np.array(ylim_max_list).max()
+        axarr[r].set_ylim(lowest_y_datapoint, highest_y_datapoint)
+
         if not True in list(df_eval_values.loc[:,"EC50_calculable{}".format(d)]):
             # if none of the curves could be fitted, base the legend on the datapoints rather than the curves
             lg = axarr[r].legend(df_eval_values['sLet_plus_sample_name'], loc='upper right', scatterpoints=1)
@@ -1172,7 +1182,7 @@ def calc_EC50(fn, dff, settings, t20):
             '''
             bar_fig_nr = 1
             # create new figure (i.e., canvas)
-            fig, ax = plt.subplots(dpi=300)
+            fig, ax = plt.subplots()
             # use the sample letter plus the sample name as the name on the x-axis
             x_names = df_eval_values.sLet_plus_sample_name
             # yerr_ful = df_eval_values.residuals_mean_ful.fillna(0)*100
@@ -1194,7 +1204,14 @@ def calc_EC50(fn, dff, settings, t20):
             ax.set_ylabel("{a} ({b})".format(a=method, b=doseunits))
 
             #save figure
-            fig.tight_layout()
+            try:
+                fig.tight_layout()
+            except ValueError:
+                sys.stdout.write("Sample names may need to be truncated for barchart. Current length = {}".format(x_names.str.len().max()))
+                sys.stdout.flush()
+                x_names = x_names.str[0:70]
+                ax.set_xticklabels(x_names, rotation=90)
+                fig.tight_layout()
             fig.savefig(dff.loc[fn,"EC50_analysis_fig_basename"] + d_name + "_bar" + '.png', format='png', dpi=150)
             if settings["save_as_pdf"] in (True, "TRUE"):
                 fig.savefig(dff.loc[fn,"EC50_analysis_fig_basename_pdf"] + d_name + "_bar" + '.pdf', format='pdf')
