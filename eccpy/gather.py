@@ -319,6 +319,8 @@ def run_gatherer(settings_excel_file, **kwargs):
                     # check if the standard for normalisation has a short name
                     if standard_name in samplenames_selected.index:
                         standard_name_short = samplenames_selected.loc[standard_name, "short name"]
+                        if not isinstance(standard_name_short, str):
+                            raise ValueError("Standard for normalisation appears more than once in 'samplenames' tab of excel settings file.\n Samplenames:\n{}".format(standard_name_short))
                     else:
                         # use the long name
                         standard_name_short = standard_name
@@ -489,7 +491,7 @@ def run_gatherer(settings_excel_file, **kwargs):
                                          format='pdf', bbox_extra_artists=(scat_lgd,), bbox_inches='tight')
 
                 # create figure object for the barchart with normalised data (collected from the scatter data)
-                barnorm_fig, barnorm_ax = plt.subplots()
+                #barnorm_fig, barnorm_ax = plt.subplots()
                 series_all_exp_redundant = pd.Series(yvalues_all_exp, index = xvalues_all_exp)
                 # convert index to integer format
                 series_all_exp_redundant.index = series_all_exp_redundant.index.astype(np.int64)
@@ -497,6 +499,7 @@ def run_gatherer(settings_excel_file, **kwargs):
                 series_all_exp_redundant_index_uniq = pd.Series(series_all_exp_redundant.index.unique())
                 series_all_exp_redundant_index_uniq.sort_values()
                 df_all_exp_nonredundant = pd.DataFrame(index=series_all_exp_redundant_index_uniq)
+
                 for sSnum_b in series_all_exp_redundant_index_uniq:
                     data_for_that_sSnum = series_all_exp_redundant.loc[sSnum_b]
                     if isinstance(data_for_that_sSnum, pd.Series):
@@ -516,71 +519,103 @@ def run_gatherer(settings_excel_file, **kwargs):
                 # extract the shortnames from the dictionary in the settings file, if available
                 df_all_exp_nonredundant["shortname"] = df_all_exp_nonredundant["longname"].apply(lambda x : samplenames_dict[x] if x in list(samplenames_dict.keys()) else x)
 
-                # count the number of samples (number of boxes in barchart)
-                bar_x_n_boxes = df_all_exp_nonredundant.shape[0]
-                # set the range of number of boxes as the indices
-                box_indices = range(bar_x_n_boxes)
-                # define error bar parameters
-                bar_error_kw = dict(ecolor='k', lw=1, capsize=2, capthick=1)
+                #######################################################
+                #   DEPRECATED BARCHART THAT HAD AN INDEXING ERROR    #
+                #######################################################
+                #
+                # # count the number of samples (number of boxes in barchart)
+                # bar_x_n_boxes = df_all_exp_nonredundant.shape[0]
+                # # set the range of number of boxes as the indices
+                # box_indices = range(bar_x_n_boxes)
+                # # define error bar parameters
+                # bar_error_kw = dict(ecolor='k', lw=1, capsize=2, capthick=1)
+                #
+                # # plot the data as a barchart
+                # barcontainer_norm = barnorm_ax.bar(box_indices,
+                #                                    df_all_exp_nonredundant["mean{}{}".format(d,norm_dataset)],
+                #                                    yerr=df_all_exp_nonredundant["SEM{}{}".format(d,norm_dataset)],
+                #                                    align="center",
+                #                                    error_kw=bar_error_kw, color = '#1b9e77')
+                # # set the xticks
+                # barnorm_ax.set_xticks(box_indices)
+                #
+                # # set the limits of the x-axis
+                # barnorm_ax.set_xlim([-1, bar_x_n_boxes])
+                # # set the limit of the y-axis
+                # barnorm_ax.set_ylim(0)
+                # # set the y-axis title
+                # # bar_ax.set_ylabel("EC50 (ug/ml)")
+                # # set the ylabel extension string
+                # if norm_dataset == "":
+                #     dose_units  = settings["x-axis (dose) units"]
+                # elif norm_dataset == "_normalised":
+                #     samplenames_selected = df_samplenames.loc[df_allp.longname, :]
+                #     # find the sample longname that is marked "True" as a standard
+                #     standard_name = samplenames_selected[samplenames_selected["standard for normalisation?"] == True].index[0]
+                #     # check if the standard for normalisation has a short name
+                #     if standard_name in samplenames_selected.index:
+                #         standard_name_short = samplenames_selected.loc[standard_name, "short name"]
+                #     else:
+                #         # use the long name
+                #         standard_name_short = standard_name
+                #     # create a string to extend the y-axis label
+                #     dose_units = "% {}".format(standard_name_short)
+                # else:
+                #     raise TypeError("dataset for standardisation{} is not recognised".format(norm_dataset))
 
-                # plot the data as a barchart
-                barcontainer_norm = barnorm_ax.bar(box_indices,
-                                                   df_all_exp_nonredundant["mean{}{}".format(d,norm_dataset)],
-                                                   yerr=df_all_exp_nonredundant["SEM{}{}".format(d,norm_dataset)],
-                                                   align="center",
-                                                   error_kw=bar_error_kw, color = '#1b9e77')
-                # set the xticks
-                barnorm_ax.set_xticks(box_indices)
 
-                # set the limits of the x-axis
-                barnorm_ax.set_xlim([-1, bar_x_n_boxes])
-                # set the limit of the y-axis
-                barnorm_ax.set_ylim(0)
-                # set the y-axis title
-                # bar_ax.set_ylabel("EC50 (ug/ml)")
-                # set the ylabel extension string
-                if norm_dataset == "":
-                    dose_units  = settings["x-axis (dose) units"]
-                elif norm_dataset == "_normalised":
-                    samplenames_selected = df_samplenames.loc[df_allp.longname, :]
-                    # find the sample longname that is marked "True" as a standard
-                    standard_name = samplenames_selected[samplenames_selected["standard for normalisation?"] == True].index[0]
-                    # check if the standard for normalisation has a short name
-                    if standard_name in samplenames_selected.index:
-                        standard_name_short = samplenames_selected.loc[standard_name, "short name"]
-                    else:
-                        # use the long name
-                        standard_name_short = standard_name
-                    # create a string to extend the y-axis label
-                    dose_units = "% {}".format(standard_name_short)
-                else:
-                    raise TypeError("dataset for standardisation{} is not recognised".format(norm_dataset))
-
-                ylabel_str = "{a}{b}, {c} ({d})".format(a=settings["calculation_type"],
-                                      b=str(settings["percentage_response"]),
-                                      c=settings["x-axis (dose) label"],
-                                      d=dose_units)
-                barnorm_ax.set_ylabel(ylabel_str)
-
-                for nametype in list_nametypes:
-                    # define name on the x-axis
-                    barnorm_x_names = df_for_barchart[nametype]
-                    # set the labels of the x-bar_axis
-                    barnorm_ax.set_xticklabels(barnorm_x_names, rotation=90)
-
-                    # ax.annotate(s="%s%s" % (nametype,d), xy=(0.015,0.93), fontsize=af, xycoords=xyc)
-                    barnorm_ax.set_title("analysed data ({e} experiments),  {b}".format(b=d_name,
-                                                             e=dff.loc[dff["run gatherer"] == True].shape[0]))
-                    # automatically tighten the layout and save figure
-                    barnorm_fig.tight_layout()
-                    # save the figure
-                    barnorm_fig.savefig(analysed_data_basename + "_bar" + d_name + norm_dataset + '.png', format='png', dpi=300)
-                    if settings["save_as_pdf"] in (True, "TRUE"):
-                        barnorm_fig.savefig(analysed_data_basename + "_bar" + d_name + norm_dataset + '.pdf', format='pdf')
-                plt.close('all')
+                # ylabel_str = "{a}{b}, {c} ({d})".format(a=settings["calculation_type"],
+                #                       b=str(settings["percentage_response"]),
+                #                       c=settings["x-axis (dose) label"],
+                #                       d=dose_units)
+                # barnorm_ax.set_ylabel(ylabel_str)
+                #
+                # for nametype in list_nametypes:
+                #     # define name on the x-axis
+                #     barnorm_x_names = df_for_barchart[nametype]
+                #     # set the labels of the x-bar_axis
+                #     barnorm_ax.set_xticklabels(barnorm_x_names, rotation=90)
+                #
+                #     # ax.annotate(s="%s%s" % (nametype,d), xy=(0.015,0.93), fontsize=af, xycoords=xyc)
+                #     barnorm_ax.set_title("analysed data ({e} experiments),  {b}".format(b=d_name,
+                #                                              e=dff.loc[dff["run gatherer"] == True].shape[0]))
+                #     # automatically tighten the layout and save figure
+                #     barnorm_fig.tight_layout()
+                #     # save the figure
+                #     barnorm_fig.savefig(analysed_data_basename + "_bar" + d_name + norm_dataset + '.png', format='png', dpi=300)
+                #     if settings["save_as_pdf"] in (True, "TRUE"):
+                #         barnorm_fig.savefig(analysed_data_basename + "_bar" + d_name + norm_dataset + '.pdf', format='pdf')
+                # plt.close('all')
 
                 # move sample names to index
                 df_all_exp_nonredundant["sample_number"] = df_all_exp_nonredundant.index
+                df_all_exp_nonredundant.set_index("shortname", inplace=True)
+                df_all_exp_nonredundant.sort_values("sample_number", inplace=True)
+
+                #######################################################
+                #       NEW BARCHART BASED ON UNIQUE SAMPLENAMES      #
+                #######################################################
+                fig, ax = plt.subplots()
+                mean_ser = df_all_exp_nonredundant["mean{}{}".format(d_name,norm_dataset)]
+                SEM_ser = df_all_exp_nonredundant["SEM{}{}".format(d_name,norm_dataset)]
+                mean_ser.plot(kind="bar", ax=ax, yerr=SEM_ser)
+                ax.set_title("analysed data ({e} experiments),  {b}".format(b=d_name, e=dff.loc[dff["run gatherer"] == True].shape[0]))
+                ylabel_str = "{a}{b} {c}\n({d})".format(a=settings["calculation_type"],
+                                      b=str(settings["percentage_response"]),
+                                      c=settings["x-axis (dose) label"],
+                                      d=dose_units)
+                ax.set_ylabel(ylabel_str)
+                ax.set_xlabel("")
+                fig.tight_layout()
+                fig.savefig(analysed_data_basename + "_bar" + d_name + norm_dataset + '.png', format='png', dpi=300)
+                if settings["save_as_pdf"] in (True, "TRUE"):
+                    fig.savefig(analysed_data_basename + "_bar" + d_name + norm_dataset + '.pdf', format='pdf')
+                plt.close('all')
+
+                #######################################################
+                #                 SAVE TO EXCEL AND CSV               #
+                #######################################################
+                # revert back to longname for csv and excel
                 df_all_exp_nonredundant.set_index("longname", inplace=True)
                 # save to excel
                 df_all_exp_nonredundant.to_excel(writer, sheet_name = "EC50_mean{}{}".format(d_name,norm_dataset))
