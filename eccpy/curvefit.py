@@ -233,14 +233,26 @@ def calc_EC50(fn, dff, settings, t20):
         len_df_dose_all, len_dfS = df_dose_all.shape[0], dfS.shape[0]
         min_num_datapoints = np.min([len_df_dose_all, len_dfS])
         # extract list of bool from both lists,truncated to have the same length
-        df_dose_all_Contains_Data = list(df_dose_all["Contains_Data"])[:min_num_datapoints]
-        dfS_Contains_Data = list(dfS["Contains_Data"])[:min_num_datapoints]
-        # Third, check if these two lists match
-        matching = df_dose_all_Contains_Data == dfS_Contains_Data
-        if matching:
-            # add the "Contains_Data" col from dose excel file to dataframe containing response data (from txt datafile)
-            df_resp_all["Contains_Data"] = df_dose_all_Contains_Data
+        df_dose_all_Contains_Data = df_dose_all["Contains_Data"].iloc[:min_num_datapoints]
+        dfS_Contains_Data = dfS["Contains_Data"].iloc[:min_num_datapoints]
+
+
+        # Third, check if these two lists match. Also check that the response data has the same index as dose data.
+        if df_dose_all_Contains_Data.tolist() == dfS_Contains_Data.tolist():
+            if df_dose_all.index.tolist() == df_resp_all.index.tolist():
+                # add the "Contains_Data" col from dose excel file to dataframe containing response data (from txt datafile)
+                df_resp_all["Contains_Data"] = df_dose_all_Contains_Data
+            else:
+                sys.stdout.write("WARNING: There is a mismatch in the indexing of the dose and the response data."
+                                 "\nDose index = {}\n Response index = {}\nAttempting to reindex the response data "
+                                 "to fit the samples Contains_Data column.".format(df_dose_all.index.tolist(), df_resp_all.index.tolist()))
+                # reindex the series so that it matches the df_resp_all index
+                # this assumes that the samples tab has correctly labelled the True and False Contains_Data column
+                df_dose_all_Contains_Data = df_dose_all_Contains_Data.reindex(index = df_resp_all.index)
+                # transfer column, as per usual
+                df_resp_all["Contains_Data"] = df_dose_all_Contains_Data
         else:
+
             raise tools.DataMismatchError("\n\nThe 'Contains_Data' columns/rows are not matching in {a} & samples tabs."
                                     "\n\nDouble-check excel file.\n\nAffected file :\n{p}\n\n"
                                     "{b} tab:\n{c}\n\nsamples tab:\n{d}\n\n".format(a=resp_assaytype,
