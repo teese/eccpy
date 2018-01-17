@@ -269,13 +269,16 @@ def normalise_between_2_values(arraylike, min_value, max_value, invert=False):
     # for pandas Dataframe
     df["norm_data"] = normalise_between_2_values(df["orig_data"], 3, 10)
     """
+    # normalise array between min and max values
     normalised = (arraylike - min_value)/(max_value - min_value)
+    # replace anything above 1 with 1
     normalised[normalised > 1] = 1
+    # replace anything below 0 with 0
     normalised[normalised < 0] = 1
+    # if desired, invert the normalised values
     if invert:
         normalised = abs(normalised - 1)
     return normalised
-
 
 
 def setup_t20_colour_list():
