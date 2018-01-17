@@ -235,6 +235,49 @@ def denormalise_0_1(value_or_array, array_min, array_max):
               "Attempting to process as if it is arraylike.....")
     return denormalised
 
+
+def normalise_between_2_values(arraylike, min_value, max_value, invert=False):
+    """Normalises an array of data between two desired values.
+
+    Any values below min_value will be converted to 0.
+    Any values above max_value will be converted to 1.
+    Optionally, the normalised array can be inverted, so that the original highest
+    values are 0, and the original lowest values are now 1.
+
+    Parameters
+    ----------
+    arraylike : np.ndarray
+        Arraylike original data (numpy array or pandas Series)
+    min_value : float
+        Desired minimum value for normalisation
+    max_value : float
+        Desired max value for normalisation
+    invert : bool
+        If True, normalised data will be inverted (former highest value = 0)
+
+    Returns
+    -------
+    normalised : np.ndarray
+        Normalised array of data
+
+    Usage
+    -----
+    from eccpy.tools import normalise_between_2_values
+    # for array
+    orig_array = np.array(range(0, 15))
+    norm_array = normalise_between_2_values(orig_array, 3, 10)
+    # for pandas Dataframe
+    df["norm_data"] = normalise_between_2_values(df["orig_data"], 3, 10)
+    """
+    normalised = (arraylike - min_value)/(max_value - min_value)
+    normalised[normalised > 1] = 1
+    normalised[normalised < 0] = 1
+    if invert:
+        normalised = abs(normalised - 1)
+    return normalised
+
+
+
 def setup_t20_colour_list():
     """ Setup a list of colours for the figures.
 
