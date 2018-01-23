@@ -274,7 +274,7 @@ def normalise_between_2_values(arraylike, min_value, max_value, invert=False):
     # replace anything above 1 with 1
     normalised[normalised > 1] = 1
     # replace anything below 0 with 0
-    normalised[normalised < 0] = 1
+    normalised[normalised < 0] = 0
     # if desired, invert the normalised values
     if invert:
         normalised = abs(normalised - 1)
