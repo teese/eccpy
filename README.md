@@ -1,11 +1,11 @@
 ![ECCpy logo](docs/logo/ECCpy_logo.png)
 
-# ECCpy#
+# ECCpy
 ECCpy is a program for EC50 calculation in python.
 
 The EC50, or the "half maximal effective concentration", is a key measure of the effectiveness of a compound to affect a biological system. It is commonly used in pharmacology, biology and biochemistry. The EC50 is calculated by fitting the dose-response data to a sigmoidal curve, typically using the Hill equation. Variants include the half maximal "lethal dose" (LD50), and "inhibitor concentration" (IC50). 
 
-# Features#
+# Features
 <h3>Robust data analysis.</h3>
  - fully automated:
   - fitting of sigmoidal curves to dose-response data
@@ -31,7 +31,7 @@ The EC50, or the "half maximal effective concentration", is a key measure of the
  - open-source software
  - built on powerful numpy, scipy, and pandas packages
 
-# Development status#
+# Development status
 
 ECCpy has been used extensively for the analysis of LD50 assays (Z-shaped curves) by bachelor, master and PhD students within the lab of Dieter Langosch at the Technical University of Munich in Germany. 
 
@@ -39,7 +39,7 @@ The code has been extensively updated and annotated for public release.
 
 However the module is still under development and is released "as is" with some known issues, limitations and legacy code. As a newly released module, bugfixing related to diverse operating systems, python versions, data formats, and experimental data types should be expected. 
 
-# Installation#
+# Installation
 
 ECCpy requires python 3.x (currently written for 3.5). We recommend the Anaconda python distribution, which contains all the required python modules (numpy, scipy, pandas and matplotlib).
 https://www.continuum.io/downloads
@@ -50,7 +50,7 @@ To install ECCpy:
  - run the following command: 
    `python setup.py install`
  
-# Usage#
+# Usage
 Using ECCpy requires only the following:
 1) Prepare your data, 2) update an excel settings file, 3) tell ECCpy to "run".
 <br />
@@ -76,10 +76,10 @@ eccpy.run_curvefit(settings)
 eccpy.run_gatherer(settings)
 ```
 
-# Test#
+# Test
  - try the example excel files in the eccpy/examples folder before switching to your own data.
 
-# ECCpy output#
+# ECCpy output
 
 <h3>run_curvefit program</h3>
  - individual dose-response curves
@@ -100,7 +100,7 @@ eccpy.run_gatherer(settings)
  - compares datapoints and fitted curves between the selected samples
 ![20160527_0_compare_raw](docs/images/20160527_0_compare_raw.png)
 
-# Contribute#
+# Contribute
 If you encounter a bug or ECCpy doesn't work for any reason, please send an email to mark.teese /at/ tum.de or initiate an issue in Github.
 
 Non-programmers can contribute by:
@@ -113,10 +113,10 @@ Programmer contributions are very welcome:
  - adding your own desired features
  - improving code, or fixing known issues.
 
-# License#
+# License
 ECCpy is free software distributed under the GNU General Public License version 3.
 
-# Citation#
+# Citation
 If you use ECCpy in your research, please use the following citation.
 Schanzenbach C, Schmidt FC, Breckner P, Teese MG, & Langosch D (2017) Identifying ionic interactions within a membrane using BLaTM, a genetic tool to measure homo-and heterotypic transmembrane helix-helix interactions. Scientific Reports 7(7):43476.
 <https://www.ncbi.nlm.nih.gov/pubmed/28266525>
