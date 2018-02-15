@@ -117,5 +117,6 @@ Programmer contributions are very welcome:
 ECCpy is free software distributed under the GNU General Public License version 3.
 
 # Citation#
-Currently there in no scientific article associated with this module. If you use ECCpy in your research, please cite as follows:
-"EC50 values were calculated using the open-source ECCpy module in python (Mark Teese, Technical University of Munich)."
+If you use ECCpy in your research, please use the following citation.
+Schanzenbach C, Schmidt FC, Breckner P, Teese MG, & Langosch D (2017) Identifying ionic interactions within a membrane using BLaTM, a genetic tool to measure homo-and heterotypic transmembrane helix-helix interactions. Scientific Reports 7(7):43476.
+<https://www.ncbi.nlm.nih.gov/pubmed/28266525>
