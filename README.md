@@ -133,3 +133,4 @@ Schanzenbach C, Schmidt FC, Breckner P, Teese MG, & Langosch D (2017) Identifyin
 
 # Contact
 Currently the code is maintained by Mark Teese at the Technical University of Munich.
+![signac_seine_bei_samois](docs/images/signac_seine_bei_samois.png)
