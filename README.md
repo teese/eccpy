@@ -130,3 +130,6 @@ If you use ECCpy in your research, please use the following citation.
 Schanzenbach C, Schmidt FC, Breckner P, Teese MG, & Langosch D (2017) Identifying ionic interactions within a membrane using BLaTM, a genetic tool to measure homo-and heterotypic transmembrane helix-helix interactions. Scientific Reports 7(7):43476.
 
 <https://www.ncbi.nlm.nih.gov/pubmed/28266525>
+
+# Contact
+Currently the code is maintained by Mark Teese at the Technical University of Munich.
