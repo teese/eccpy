@@ -19,9 +19,17 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 from setuptools import setup, find_packages
+from codecs import open
+from os import path
+
+here = path.abspath(path.dirname(__file__))
+
+# Get the long description from the README file
+with open(path.join(here, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
 
 classifiers = """\
-Development Status :: Experimental
+"Development Status :: 3 - Alpha",
 Intended Audience :: Science/Research
 License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)
 Programming Language :: Python :: 3
@@ -32,13 +40,17 @@ Classifier: Operating System :: OS Independent
 """
 
 setup(name='eccpy',
-      author='Mark Teese',
-      author_email='mark.teese /at/ tum.de',
-      license='LGPLv3',
-      packages=find_packages(),
-      classifiers=classifiers.splitlines(),
-      platforms=['ALL'],
-      keywords=["EC50", "LD50", "IC50", "dose-response", "effective concentration",
-                "lethal dose", "inhibitor concentration", "sigmoidal curve"],
-      requires=['pandas', 'matplotlib', 'numpy', 'scipy'],
-      version='0.3.9')
+    description="High-throughput calculation of EC50 values.",
+    url="https://github.com/teese/eccpy",
+    download_url = 'https://github.com/teese/eccpy/archive/0.4.0.tar.gz',
+    long_description=long_description,
+    license='LGPLv3',
+    packages=find_packages(),
+    classifiers=classifiers.splitlines(),
+    install_requires=["pandas", "numpy", "matplotlib"],
+    platforms=['ALL'],
+    keywords="EC50 LD50 IC50 doseresponse concentration dose inhibitor sigmoidal curve",
+    requires=['pandas', 'matplotlib', 'numpy', 'scipy'],
+    # obtains package data from MANIFEST.in
+    include_package_data=True,
+    version='0.4.0')

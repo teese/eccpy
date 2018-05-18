@@ -23,6 +23,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import os
 import pandas as pd
 import eccpy.tools as tools
+import os
+from time import strftime
 
 def read_settings_file(settings_excel_file):
     """ Opens the settings excel file tabs as individual dataframes.
@@ -43,7 +45,7 @@ def read_settings_file(settings_excel_file):
         Created from the "files" tab of the settings excel file.
         Contains the "True" / "False" list of input files to analyse in that run.
     samplenames_dict : dict
-        Dictionary to convert long sample names to shorter ones that are easier to fit into figures.
+        Dictionary to convert long sample names to short ones that are easier to fit into figures.
         Created from the "samplenames" tab of the settings excel file.
     """
     # convert settings file to pandas dataframe, set the first column "User-defined variable" as the index
@@ -117,8 +119,6 @@ def setup_output_folder(settings_file, subfolder_name):
     output_path : filepath, string
         Output subfolder.
     """
-    import os
-    from time import strftime
     # create a string with the current date
     date_string = strftime("%Y%m%d")
     # obtain the path and filename

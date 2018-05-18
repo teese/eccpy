@@ -1,0 +1,8 @@
+prune docs
+include MANIFEST.in
+include license.txt
+include setup.cfg
+include README.md
+include README.rst
+recursive-include examples *.xlsx
+recursive-include templates *.xlsx
