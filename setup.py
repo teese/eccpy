@@ -25,7 +25,7 @@ from os import path
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
-with open(path.join(here, 'README.md'), encoding='utf-8') as f:
+with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 classifiers = """\
@@ -45,7 +45,7 @@ setup(name='eccpy',
     download_url = 'https://github.com/teese/eccpy/archive/0.4.5.tar.gz',
     project_urls={'Wiki': 'https://github.com/teese/eccpy/wiki', 'GroupHomepage':'http://cbp.wzw.tum.de/index.php?id=9'},
     long_description=long_description,
-    long_description_content_type='text/markdown',
+    long_description_content_type='text/x-rst',
     license='LGPLv3',
     packages=find_packages(),
     classifiers=classifiers.splitlines(),

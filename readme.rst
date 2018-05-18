@@ -1,7 +1,10 @@
-.. image:: docs/logo/ECCpy_logo.png
+.. image:: https://raw.githubusercontent.com/teese/eccpy/master/docs/logo/ECCpy_logo.png
+
 ================================================
 ECCpy, a program for EC50 calculation in python.
 ================================================
+
+ECCpy is a program for EC50 calculation in python.
 
 The EC50, or the "half maximal effective concentration", is a key measure of the effectiveness of a compound to affect a biological system. It is commonly used in pharmacology, biology and biochemistry. The EC50 is calculated by fitting the dose-response data to a sigmoidal curve, typically using the Hill equation. Variants include the half maximal "lethal dose" (LD50), and "inhibitor concentration" (IC50).
 
@@ -10,21 +13,27 @@ The EC50, or the "half maximal effective concentration", is a key measure of the
 =========
 **Robust data analysis.**
  - fully automated:
+
   - fitting of sigmoidal curves to dose-response data
   - calculation of EC50, LD50 or IC50 values.
   - high-throughput analysis
   - comparison of EC50 values from different experiments
   - calculation of EC25 or EC75 values
+
  - accepts REAL biological data
+
   - pre-filtering excludes nonsense data
   - judgefit module identifies low-quality EC50 values
 
 **Designed for humans.**
  - easy-to-use excel files:
+
   - excel settings file
   - excel input file with dose and response data
   - excel output file with EC50 values
+
  - simple graphical output:
+
   - sigmoidal curves with EC50 shown on graph
   - daily summary barcharts and curves
 
@@ -50,7 +59,10 @@ Installation
 ECCpy requires python 3.x (currently written for 3.5). We recommend the Anaconda python distribution, which contains all the required python modules (numpy, scipy, pandas and matplotlib).
 https://www.continuum.io/downloads
 
-To install ECCpy:
+Via pip:
+ - `pip install eccpy`
+
+Via GitHub:
  - download and unpack the module from Github
  - open the command console. Navigate to the ECCpy folder that contains setup.py
  - run the following command:
@@ -71,19 +83,23 @@ Using ECCpy requires only the following:
  - copy the ECCpy_settings_template.xlsx from eccpy/templates
  - open the excel file, input the name and location of your datafiles, and the desired location for your output files
  - write "TRUE" next to the files you want to examine
-![01_run_curvefit_settings](docs/images/01_run_curvefit_settings.png)
+
+![01_run_curvefit_settings](https://raw.githubusercontent.com/teese/eccpy/master/docs/images/01_run_curvefit_settings.png)
 
 **3) tell ECCpy to "run".**
+
  - run the ipython/jupyter notebook, which opens a python interpreter in your web browser
  - paste in the following three lines. Replace the location of your settings file.
  - hit Ctrl-Enter to run
  - based on your output, adjust the quality thresholds in the settings file to suit your data
+
 ```
 import eccpy
 settings = r"D:\data\ECCpy_settings.xlsx"
 eccpy.run_curvefit(settings)
 eccpy.run_gatherer(settings)
 ```
+
 ====
 Test
 ====
@@ -97,20 +113,24 @@ ECCpy output
  - individual dose-response curves
  - automatic judging of data quality
  - daily summary curves, barchart and more!
-![curve_fit_output_sample3](docs/images/curve_fit_output_sample3.png)
-![generated_data_0EC50_analysis_fig](docs/images/generated_data_0EC50_analysis_fig.png)
+
+![curve_fit_output_sample3](https://raw.githubusercontent.com/teese/eccpy/master/docs/images/curve_fit_output_sample3.png)
+![generated_data_0EC50_analysis_fig](https://raw.githubusercontent.com/teese/eccpy/master/docs/images/generated_data_0EC50_analysis_fig.png)
 <br />
 **run_gatherer program**
+
  - combines data from multiple experiments
  - excludes EC50 values that are not of sufficient quality, according to user-defined thresholds
  - bar charts with mean and SEM over all selected experiments
  - scatter plots showing individual datapoints for each day/experiment, and more!
-![analysis_output_figures](docs/images/analysis_output_figures.png)
+
 <br /><br />
 **compare_rawdata program**
+
  - collects raw data and dose-response curves from multiple experiments
  - compares datapoints and fitted curves between the selected samples
-![20160527_0_compare_raw](docs/images/20160527_0_compare_raw.png)
+
+![20160527_0_compare_raw](https://raw.githubusercontent.com/teese/eccpy/master/docs/images/20160527_0_compare_raw.png)
 
 ==========
 Contribute
@@ -126,6 +146,7 @@ Programmer contributions are very welcome:
  - adapting ECCpy for more diverse input files and datatypes. Currently accepted are A) excel, B) BMG FluoStar, and C) Molecular Devices SoftMax(VersaMax) files.
  - adding your own desired features
  - improving code, or fixing known issues.
+
 ==========
 License
 ==========
@@ -134,5 +155,8 @@ ECCpy is free software distributed under the GNU General Public License version 
 ========
 Citation
 ========
-Currently there in no scientific article associated with this module. If you use ECCpy in your research, please cite as follows:
-"EC50 values were calculated using the open-source ECCpy module in python (Mark Teese, Technical University of Munich)."
+If you use ECCpy in your research, please use the following citation.
+
+Schanzenbach C, Schmidt FC, Breckner P, Teese MG, & Langosch D (2017) Identifying ionic interactions within a membrane using BLaTM, a genetic tool to measure homo-and heterotypic transmembrane helix-helix interactions. Scientific Reports 7(7):43476.
+
+<https://www.ncbi.nlm.nih.gov/pubmed/28266525>
