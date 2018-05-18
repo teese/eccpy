@@ -132,5 +132,6 @@ Schanzenbach C, Schmidt FC, Breckner P, Teese MG, & Langosch D (2017) Identifyin
 <https://www.ncbi.nlm.nih.gov/pubmed/28266525>
 
 # Contact
-Currently the code is maintained by Mark Teese at the Technical University of Munich.
+Currently the code is maintained by Mark Teese at the Technical University of Munich. Contact details are on my website at TUM, and/or in the image below.
+
 ![signac_seine_bei_samois](docs/images/signac_seine_bei_samois.png)

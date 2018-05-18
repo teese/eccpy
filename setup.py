@@ -28,6 +28,8 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
+print(long_description)
+
 classifiers = """\
 "Development Status :: 3 - Alpha",
 Intended Audience :: Science/Research
@@ -42,8 +44,10 @@ Classifier: Operating System :: OS Independent
 setup(name='eccpy',
     description="High-throughput calculation of EC50 values.",
     url="https://github.com/teese/eccpy",
-    download_url = 'https://github.com/teese/eccpy/archive/0.4.0.tar.gz',
+    download_url = 'https://github.com/teese/eccpy/archive/0.4.1.tar.gz',
+    project_urls={'Wiki': 'https://github.com/teese/eccpy/wiki', 'GroupHomepage':'http://cbp.wzw.tum.de/index.php?id=9'},
     long_description=long_description,
+    long_description_content_type='text/markdown',
     license='LGPLv3',
     packages=find_packages(),
     classifiers=classifiers.splitlines(),
@@ -53,4 +57,4 @@ setup(name='eccpy',
     requires=['pandas', 'matplotlib', 'numpy', 'scipy'],
     # obtains package data from MANIFEST.in
     include_package_data=True,
-    version='0.4.0')
+    version='0.4.1')
