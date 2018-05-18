@@ -42,7 +42,7 @@ Classifier: Operating System :: OS Independent
 setup(name='eccpy',
     description="High-throughput calculation of EC50 values.",
     url="https://github.com/teese/eccpy",
-    download_url = 'https://github.com/teese/eccpy/archive/0.4.5.tar.gz',
+    download_url = 'https://github.com/teese/eccpy/archive/0.4.6.tar.gz',
     project_urls={'Wiki': 'https://github.com/teese/eccpy/wiki', 'GroupHomepage':'http://cbp.wzw.tum.de/index.php?id=9'},
     long_description=long_description,
     long_description_content_type='text/x-rst',
@@ -54,4 +54,4 @@ setup(name='eccpy',
     requires=['pandas', 'matplotlib', 'numpy', 'scipy'],
     # obtains package data from MANIFEST.in
     include_package_data=True,
-    version='0.4.5')
+    version='0.4.6')
