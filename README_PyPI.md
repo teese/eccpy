@@ -1,4 +1,4 @@
-![ECCpy logo](docs/logo/ECCpy_logo.png)
+![ECCpy logo](https://raw.githubusercontent.com/teese/eccpy/master/docs/logo/ECCpy_logo.png)
 
 # ECCpy
 ECCpy is a program for EC50 calculation in python.
