@@ -70,7 +70,7 @@ Using ECCpy requires only the following:
 * copy the ECCpy_settings_template.xlsx from eccpy/templates
 * open the excel file, input the name and location of your datafiles, and the desired location for your output files
 * write "TRUE" next to the files you want to examine
-![01_run_curvefit_settings](docs/images/01_run_curvefit_settings.png)
+![01_run_curvefit_settings](https://raw.githubusercontent.com/teese/eccpy/master/docs/images/01_run_curvefit_settings.png)
 
 <h3>3) tell ECCpy to "run".</h3>
 * run the ipython/jupyter notebook, which opens a python interpreter in your web browser
@@ -94,8 +94,8 @@ eccpy.run_gatherer(settings)
 * individual dose-response curves
 * automatic judging of data quality
 * daily summary curves, barchart and more!
-![curve_fit_output_sample3](docs/images/curve_fit_output_sample3.png)
-![generated_data_0EC50_analysis_fig](docs/images/generated_data_0EC50_analysis_fig.png)
+![curve_fit_output_sample3](https://raw.githubusercontent.com/teese/eccpy/master/docs/images/curve_fit_output_sample3.png)
+![generated_data_0EC50_analysis_fig](https://raw.githubusercontent.com/teese/eccpy/master/docs/images/generated_data_0EC50_analysis_fig.png)
 
 <h3>run_gatherer program</h3>
 
@@ -103,13 +103,13 @@ eccpy.run_gatherer(settings)
 * excludes EC50 values that are not of sufficient quality, according to user-defined thresholds
 * bar charts with mean and SEM over all selected experiments
 * scatter plots showing individual datapoints for each day/experiment, and more!
-![analysis_output_figures](docs/images/analysis_output_figures.png)
+![analysis_output_figures](https://raw.githubusercontent.com/teese/eccpy/master/docs/images/analysis_output_figures.png)
 
 <h3>compare_rawdata program</h3>
 
 * collects raw data and dose-response curves from multiple experiments
 * compares datapoints and fitted curves between the selected samples
-![20160527_0_compare_raw](docs/images/20160527_0_compare_raw.png)
+![20160527_0_compare_raw](https://raw.githubusercontent.com/teese/eccpy/master/docs/images/20160527_0_compare_raw.png)
 
 # Contribute
 If you encounter a bug or ECCpy doesn't work for any reason, please send an email to mark.teese /at/ tum.de or initiate an issue in Github.
@@ -137,4 +137,4 @@ Schanzenbach C, Schmidt FC, Breckner P, Teese MG, & Langosch D (2017) Identifyin
 # Contact
 Currently the code is maintained by Mark Teese at the Technical University of Munich. Contact details are on my website at TUM, and/or in the image below.
 
-![signac_seine_bei_samois](docs/images/signac_seine_bei_samois.png)
+![signac_seine_bei_samois](https://raw.githubusercontent.com/teese/eccpy/master/docs/images/signac_seine_bei_samois.png)
