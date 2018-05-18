@@ -25,7 +25,7 @@ from os import path
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
-with open(path.join(here, 'README_PyPI.md'), encoding='utf-8') as f:
+with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 classifiers = """\
@@ -42,7 +42,7 @@ Classifier: Operating System :: OS Independent
 setup(name='eccpy',
     description="High-throughput calculation of EC50 values.",
     url="https://github.com/teese/eccpy",
-    download_url = 'https://github.com/teese/eccpy/archive/0.4.3.tar.gz',
+    download_url = 'https://github.com/teese/eccpy/archive/0.4.4.tar.gz',
     project_urls={'Wiki': 'https://github.com/teese/eccpy/wiki', 'GroupHomepage':'http://cbp.wzw.tum.de/index.php?id=9'},
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -50,9 +50,8 @@ setup(name='eccpy',
     packages=find_packages(),
     classifiers=classifiers.splitlines(),
     install_requires=["pandas", "numpy", "matplotlib"],
-    platforms=['ALL'],
     keywords="EC50 LD50 IC50 doseresponse concentration dose inhibitor sigmoidal curve",
     requires=['pandas', 'matplotlib', 'numpy', 'scipy'],
     # obtains package data from MANIFEST.in
     include_package_data=True,
-    version='0.4.3')
+    version='0.4.4')
