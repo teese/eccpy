@@ -25,25 +25,25 @@ from os import path
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
-with open(path.join(here, 'readme.rst'), encoding='utf-8') as f:
+with open(path.join(here, 'readme.rst')) as f:
     long_description = f.read()
 
 classifiers = """\
-"Development Status :: 3 - Alpha",
 Intended Audience :: Science/Research
 License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)
 Programming Language :: Python :: 3
 Topic :: Scientific/Engineering :: Bio-Informatics
 Topic :: Scientific/Engineering :: Medical Science Apps.
 Topic :: Scientific/Engineering :: Chemistry
-Classifier: Operating System :: OS Independent
 """
 
 setup(name='eccpy',
     description="High-throughput calculation of EC50 values.",
+	author="Mark Teese",
+    author_email="mark.teese@checkmytumhomepage.de",
     url="https://github.com/teese/eccpy",
     download_url = 'https://github.com/teese/eccpy/archive/0.4.6.tar.gz',
-    project_urls={'Wiki': 'https://github.com/teese/eccpy/wiki', 'GroupHomepage':'http://cbp.wzw.tum.de/index.php?id=9'},
+    project_urls={'Wiki': 'https://github.com/teese/eccpy/wiki', 'LangoschLab':'http://cbp.wzw.tum.de/index.php?id=9', "TU_Muenchen":"https://www.tum.de"},
     long_description=long_description,
     long_description_content_type='text/x-rst',
     license='LGPLv3',
@@ -54,4 +54,4 @@ setup(name='eccpy',
     requires=['pandas', 'matplotlib', 'numpy', 'scipy'],
     # obtains package data from MANIFEST.in
     include_package_data=True,
-    version='0.4.6')
+    version="0.4.6")

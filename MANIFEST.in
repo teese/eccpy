@@ -1,4 +1,3 @@
-prune docs
 include MANIFEST.in
 include license.txt
 include setup.cfg
