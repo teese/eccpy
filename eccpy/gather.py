@@ -125,7 +125,7 @@ def run_gatherer(settings_excel_file, **kwargs):
             # if it is a real file, open
             if os.path.isfile(dff.loc[fn,"ofd_EC50_eval_excel"]):
                 # open  as a new pandas dataframe
-                df_eval_values = pd.read_excel(dff.loc[fn,"ofd_EC50_eval_excel"], sheetname="v_" + data_file[:20])
+                df_eval_values = pd.read_excel(dff.loc[fn,"ofd_EC50_eval_excel"], sheet_name="v_" + data_file[:20])
                 # add the sample name to the dataframe, so it can be identified later
                 df_eval_values["file"] = dff.loc[fn,"ofd_EC50_eval_excel"]
                 # convert the sample_name column to a string datatype (forcing np.nan to be "nan")
@@ -135,7 +135,7 @@ def run_gatherer(settings_excel_file, **kwargs):
                 # join the dataframe with all previously joined dataframes
                 dfc = pd.concat([dfc,df_eval_values], axis=0)
                 # open the tab of the summary excel file that contains all the boolean values
-                df_eval_bool = pd.read_excel(dff.loc[fn,"ofd_EC50_eval_excel"], sheetname="b_" + data_file[:20])
+                df_eval_bool = pd.read_excel(dff.loc[fn,"ofd_EC50_eval_excel"], sheet_name="b_" + data_file[:20])
                 # join the dataframe with all previously joined dataframes
                 dfcb = pd.concat([dfcb,df_eval_bool], axis=0)
                 # set the sample_name as the index

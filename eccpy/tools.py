@@ -18,9 +18,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
+import os
+from pathlib import Path
+from typing import List
+
 import numpy as np
 import pandas as pd
 import csv
+
+import eccpy
+
 
 def aaa(df_or_series):
     """ Function for use in debugging.
@@ -587,3 +594,29 @@ def format_cols_2digit(df, skip_last_col=True):
         reformatted_cols = ["%02d" % col for col in df.columns]
 
     return reformatted_cols
+
+
+def assert_df_contains_no_nan_values(df: pd.DataFrame):
+
+    df_contains_nan = df.isnull().any().any()
+
+    if df_contains_nan:
+        positions_with_nan: List[str] = []
+
+        for column_name in df.columns:
+            for index_name in df.index:
+                value = df.at[index_name, column_name]
+                if pd.isnull(value):
+                    position_string = f"(row='{index_name}', column='{column_name}')"
+                    positions_with_nan.append(position_string)
+
+        all_positions_str = ", and ".join(positions_with_nan)
+
+        raise ValueError(f"\n\nThe 'files' tab of the excel settings appears to contain empty cells at {all_positions_str}. "
+                         "Please delete any partially filled rows. "
+                         "Fill empty cells with the text 'None' if necessary.")
+
+
+def get_eccpy_module_path()-> Path:
+    eccpy_module_path = Path(os.path.abspath(eccpy.__file__)).parents[1]
+    return eccpy_module_path

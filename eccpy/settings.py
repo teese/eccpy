@@ -20,11 +20,14 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-import os
+
 import pandas as pd
 import eccpy.tools as tools
 import os
 from time import strftime
+
+from eccpy.tools import assert_df_contains_no_nan_values
+
 
 def read_settings_file(settings_excel_file):
     """ Opens the settings excel file tabs as individual dataframes.
@@ -49,20 +52,17 @@ def read_settings_file(settings_excel_file):
         Created from the "samplenames" tab of the settings excel file.
     """
     # convert settings file to pandas dataframe, set the first column "User-defined variable" as the index
-    df_settings = pd.read_excel(settings_excel_file, sheetname = "settings").set_index("User-defined variable")
+    df_settings = pd.read_excel(settings_excel_file, sheet_name="settings").set_index("User-defined variable")
     # extract the column with the settings as a pandas Series
     settings = df_settings["Value"]
     # read the settings file tab that contains a list of short names to describe the data
-    df_samplenames = pd.read_excel(settings_excel_file, sheetname="samplenames")
+    df_samplenames = pd.read_excel(settings_excel_file, sheet_name="samplenames")
     # open tab with list of files for analysis as a pandas dataframe (data frame files, dff)
-    dff = pd.read_excel(settings_excel_file, sheetname = "files")
+    dff = pd.read_excel(settings_excel_file, sheet_name = "files")
     # raise an error if there are empty values, except in the notes and comments column
-    dff_data = dff.drop("notes & comments",axis=1)
-    inds = pd.Series(pd.isnull(dff_data).any(1).nonzero()[0])
-    if len(inds) > 0:
-        raise ValueError("\n\nThe 'files' tab of the excel settings appears to contain empty cells at row {}. "
-                         "Please delete any partially filled rows. "
-                         "Fill empty cells with the text 'None' if necessary.".format(list(inds+2)))
+    dff_data = dff.drop("notes & comments", axis=1)
+
+    assert_df_contains_no_nan_values(dff_data)
 
     # convert true-like objects (TRUE, true, WAHR, etc) to python bool True
     dff["run curvefit"] = dff["run curvefit"].apply(tools.convert_truelike_to_bool)
@@ -97,6 +97,7 @@ def read_settings_file(settings_excel_file):
         dff.loc[:,path] = dff.loc[:,path].apply(lambda x: os.path.normpath(x))
 
     return settings, dff, df_samplenames
+
 
 def setup_output_folder(settings_file, subfolder_name):
     """ Defines an output folder based on the path of the settings file.
