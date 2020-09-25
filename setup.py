@@ -54,4 +54,4 @@ setup(name='eccpy',
     requires=['pandas', 'matplotlib', 'numpy', 'scipy'],
     # obtains package data from MANIFEST.in
     include_package_data=True,
-    version="0.4.6")
+    version="0.5.0")
