@@ -166,13 +166,10 @@ Currently the code is maintained by Mark Teese at the Technical University of Mu
 
 For contact details, see the image below.
 
-Further contact details are available at my `staff page`__ within the `Langosch lab`__
-of the Technical University of Munich.
+You can also contact the `Langosch lab`__ of the Technical University of Munich.
 
-.. _StaffPage: http://cbp.wzw.tum.de/index.php?id=49&L=1
 .. _LangoschPage: http://cbp.wzw.tum.de/index.php?id=9
 
-__ StaffPage_
 __ LangoschPage_
 
 
