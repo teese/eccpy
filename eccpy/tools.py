@@ -619,4 +619,5 @@ def assert_df_contains_no_nan_values(df: pd.DataFrame):
 
 def get_eccpy_module_path()-> Path:
     eccpy_module_path = Path(os.path.abspath(eccpy.__file__)).parents[1]
+    #eccpy_module_path = Path(__file__).parents[1]
     return eccpy_module_path
