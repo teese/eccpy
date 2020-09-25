@@ -146,7 +146,7 @@ Pull requests are also very welcome.
 License
 -------
 
-ECCpy is free software distributed under the GNU General Public License version 3.
+ECCpy is free software distributed under the permissive MIT license.
 
 
 Citation
