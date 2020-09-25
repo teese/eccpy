@@ -49,9 +49,9 @@ setup(name='eccpy',
     license='LGPLv3',
     packages=find_packages(),
     classifiers=classifiers.splitlines(),
-    install_requires=["pandas", "numpy", "matplotlib"],
+    install_requires=["pandas", "numpy", "matplotlib", "pytest", "scipy", "xlrd", "openpyxl"],
     keywords="EC50 LD50 IC50 doseresponse concentration dose inhibitor sigmoidal curve",
     requires=['pandas', 'matplotlib', 'numpy', 'scipy'],
     # obtains package data from MANIFEST.in
     include_package_data=True,
-    version="0.4.6")
+    version="0.5.0")

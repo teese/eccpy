@@ -1,2 +1,4 @@
 .idea
-eccpy/__pycache__/
+**/__pycache__/
+test/temp_output
+eccpy.egg-info
