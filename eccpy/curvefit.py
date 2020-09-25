@@ -1254,7 +1254,8 @@ def calc_EC50(fn, dff, settings, t20):
     # convert listlike to stringlists
     df_eval_values = tools.convert_listlike_cols_to_str(df_eval_values, list_arraylike_cols)
 
-    # df_eval_bool = convert_listlike_cols_to_str(df_eval_bool, list_arraylike_cols)
+    df_by_sample = analyse_by_sample_name_for_single_run(df_eval_values)
+
     # save evaluation dataframe to csv
     df_eval_values.to_csv(dff.loc[fn,"ofd_EC50_eval_csv"], sep=",", quoting=csv.QUOTE_NONNUMERIC)
     df_eval_values.to_csv(dff.loc[fn,"ofd_EC50_eval_tabsep_csv"], sep="\t", quoting=csv.QUOTE_NONNUMERIC)
@@ -1262,6 +1263,7 @@ def calc_EC50(fn, dff, settings, t20):
     writer = pd.ExcelWriter(dff.loc[fn,"ofd_EC50_eval_excel"])#engine='xlsxwriter'
     df_eval_values.to_excel(writer, sheet_name="v_" + data_file[:20])
     df_eval_bool.to_excel(writer, sheet_name="b_" + data_file[:20])
+    df_by_sample.to_excel(writer, sheet_name="by_sample")
     settings.to_frame().to_excel(writer, sheet_name="settings")
     writer.save()
     writer.close()
@@ -1269,6 +1271,27 @@ def calc_EC50(fn, dff, settings, t20):
     settings_csv_path = os.path.join(dff.loc[fn, "ofd_csv"], "settings.csv")
     settings.to_csv(settings_csv_path)
     print('\n-------------------------------------\n')
+
+
+def analyse_by_sample_name_for_single_run(df_eval_values):
+    df_seems_okay = df_eval_values.loc[df_eval_values.data_seems_okay == True]
+    df_seems_okay = df_seems_okay.loc[:, ["EC50", "sample_name"]]
+    df_seems_okay["EC50"] = df_seems_okay["EC50"].astype(float)
+    df_by_sample = pd.DataFrame(index=df_eval_values.sample_name.unique())
+    groupedby = df_seems_okay.groupby("sample_name")
+    df_by_sample["mean"] = groupedby.mean()["EC50"]
+    df_by_sample["n"] = groupedby.count()["EC50"]
+    df_by_sample["std"] = groupedby.std()["EC50"]
+    sample_name_value_counts = df_eval_values["sample_name"].value_counts()
+    for sample_name in df_by_sample.index:
+        n_samples_orig = sample_name_value_counts[sample_name]
+        n_samples_data_seems_okay = df_by_sample.at[sample_name, "n"]
+        n_samples_data_seems_okay = n_samples_data_seems_okay if not pd.isnull(n_samples_data_seems_okay) else 0
+        n_excluded_samples = n_samples_orig - n_samples_data_seems_okay
+        df_by_sample.at[sample_name, "n_excluded"] = n_excluded_samples
+        df_by_sample.at[sample_name, "n_total"] = n_samples_orig
+    return df_by_sample
+
 
 def calc_EC50_brent_eq(sLet, sample_name, hill_constants, y50_norm):
     """ Calculates the EC50 from the fitted curve to normalised data.
