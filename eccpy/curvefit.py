@@ -136,6 +136,9 @@ def calc_EC50(fn, dff, settings, t20):
     ofd_EC50_eval_excel : excel file
         Output summary excel file with EC50 values
     """
+    # disable divide by zero warnings encountered during curve fitting
+    np.seterr(divide='ignore')
+
     # define datasets that have been adjusted before attempting fitting ("_orig" is default, "_ful", "fixed upper limit"
     #  is for specific LD50 analyses
     datasets = ast.literal_eval(settings["datasets"])
