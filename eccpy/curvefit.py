@@ -66,7 +66,7 @@ def run_curvefit(settings_excel_file):
     Usage
     -----
     import eccpy
-    settings = r"C:\path\to\your\settings\file.xlsx"
+    settings = r"C:/path/to/your/settings/file.xlsx"
     eccpy.run_curvefit(settings)
 
     Note
@@ -467,8 +467,8 @@ def calc_EC50(fn, dff, settings, t20):
         axarr[0,0].set_xlim(xlim_min_raw,xlim_max_plot1)
         # axarr[0, 0].set_xlim(0, xlim_max_plot1)
         if "_ful" in datasets:
-            axarr[0,0].annotate(s="original data", xy=(0.71,0.9), fontsize=af, xycoords=xyc, color = t20[0])
-            axarr[0,0].annotate(s="fixed upper limit (ful) data", xy=(0.43,0.8), fontsize=af, xycoords=xyc, color = t20[2])
+            axarr[0,0].annotate(text="original data", xy=(0.71,0.9), fontsize=af, xycoords=xyc, color = t20[0])
+            axarr[0,0].annotate(text="fixed upper limit (ful) data", xy=(0.43,0.8), fontsize=af, xycoords=xyc, color = t20[2])
 
         #######################################################################################################
         #                                                                                                     #
@@ -776,8 +776,8 @@ def calc_EC50(fn, dff, settings, t20):
                 lg.draw_frame(False)
             if "_ful" in datasets:
                 # set annotation in top right
-                axarr[1,0].annotate(s="normalised (ful) data", xy=(0.53,0.9), fontsize=af, xycoords=xyc, color=t20[2])
-                axarr[1,0].annotate(s="normalised data", xy=(0.63,0.8), fontsize=af, xycoords=xyc, color=t20[0])
+                axarr[1,0].annotate(text="normalised (ful) data", xy=(0.53,0.9), fontsize=af, xycoords=xyc, color=t20[2])
+                axarr[1,0].annotate(text="normalised data", xy=(0.63,0.8), fontsize=af, xycoords=xyc, color=t20[0])
 
             # analyse the curve fit and data to judge whether the EC50 value is accurate
             dfe = judgefit.judge_fit(dfe, sLet, settings)
@@ -840,10 +840,10 @@ def calc_EC50(fn, dff, settings, t20):
                 Cvect = "".join(dfS.loc[sLet,"Uniprot#2":"Mutant#2"])
                 # extract assay version (1.1, 1.2, etc)
                 Version = dfS.loc[sLet,"notes"].strip('_')
-                axarr[0,1].annotate(s="Nvect: %s" % Nvect, xy=(xaxis_left,yaxis_pos[0]), fontsize=af, xycoords=xyc, alpha=0.75)
-                axarr[0,1].annotate(s="Cvect: %s" % Cvect, xy=(xaxis_left,yaxis_pos[1]), fontsize=af, xycoords=xyc, alpha=0.75)
-                # axarr[0,1].annotate(s=data_evaluation, xy=(0.6,yaxis_pos[0]), fontsize=af, xycoords=xyc, alpha=0.75)
-                axarr[0,1].annotate(s=Version, ha='right', xy=(0.98,yaxis_pos[0]), fontsize=af, xycoords=xyc, alpha=0.75)
+                axarr[0,1].annotate(text="Nvect: %s" % Nvect, xy=(xaxis_left,yaxis_pos[0]), fontsize=af, xycoords=xyc, alpha=0.75)
+                axarr[0,1].annotate(text="Cvect: %s" % Cvect, xy=(xaxis_left,yaxis_pos[1]), fontsize=af, xycoords=xyc, alpha=0.75)
+                # axarr[0,1].annotate(text=data_evaluation, xy=(0.6,yaxis_pos[0]), fontsize=af, xycoords=xyc, alpha=0.75)
+                axarr[0,1].annotate(text=Version, ha='right', xy=(0.98,yaxis_pos[0]), fontsize=af, xycoords=xyc, alpha=0.75)
 
         # create dictionary to hold x-axis locations of annotations, for each dataset tested
         xd = {}
@@ -859,36 +859,36 @@ def calc_EC50(fn, dff, settings, t20):
 
         # for d in datasets:
         #     #add headers to table showing the rsquared and other aspects of the fit and dataset
-        #     axarr[0,1].annotate(s=d_name[1:], xy=(xd[d],yaxis_pos[2]), fontsize=af, xycoords=xyc, alpha=0.75)
+        #     axarr[0,1].annotate(text=d_name[1:], xy=(xd[d],yaxis_pos[2]), fontsize=af, xycoords=xyc, alpha=0.75)
 
-        axarr[0,1].annotate(s="{a} ({b})".format(a=method, b=doseunits), xy=(xaxis_left,yaxis_pos[3]), fontsize=af, xycoords=xyc, alpha=0.75)
-        axarr[0,1].annotate(s="rsquared", xy=(xaxis_left,yaxis_pos[4]), fontsize=af, xycoords=xyc, alpha=0.75)
-        axarr[0,1].annotate(s="hillslope", xy=(xaxis_left,yaxis_pos[5]), fontsize=af, xycoords=xyc, alpha=0.75)
-        axarr[0,1].annotate(s="n_lowdose_datapoints", xy=(xaxis_left,yaxis_pos[6]), fontsize=af, xycoords=xyc, alpha=0.75)
-        axarr[0,1].annotate(s="std_lowdose_datapoints", xy=(xaxis_left,yaxis_pos[7]), fontsize=af, xycoords=xyc, alpha=0.75)
-        axarr[0,1].annotate(s="n_highdose_datapoints", xy=(xaxis_left,yaxis_pos[8]), fontsize=af, xycoords=xyc, alpha=0.75)
-        axarr[0,1].annotate(s="std_highdose_datapoints", xy=(xaxis_left,yaxis_pos[9]), fontsize=af, xycoords=xyc, alpha=0.75)
+        axarr[0,1].annotate(text="{a} ({b})".format(a=method, b=doseunits), xy=(xaxis_left,yaxis_pos[3]), fontsize=af, xycoords=xyc, alpha=0.75)
+        axarr[0,1].annotate(text="rsquared", xy=(xaxis_left,yaxis_pos[4]), fontsize=af, xycoords=xyc, alpha=0.75)
+        axarr[0,1].annotate(text="hillslope", xy=(xaxis_left,yaxis_pos[5]), fontsize=af, xycoords=xyc, alpha=0.75)
+        axarr[0,1].annotate(text="n_lowdose_datapoints", xy=(xaxis_left,yaxis_pos[6]), fontsize=af, xycoords=xyc, alpha=0.75)
+        axarr[0,1].annotate(text="std_lowdose_datapoints", xy=(xaxis_left,yaxis_pos[7]), fontsize=af, xycoords=xyc, alpha=0.75)
+        axarr[0,1].annotate(text="n_highdose_datapoints", xy=(xaxis_left,yaxis_pos[8]), fontsize=af, xycoords=xyc, alpha=0.75)
+        axarr[0,1].annotate(text="std_highdose_datapoints", xy=(xaxis_left,yaxis_pos[9]), fontsize=af, xycoords=xyc, alpha=0.75)
 
         for d in datasets:
             # change the dataset name (e.g. "_orig" to "") to an empty string if there is only one dataset for analysis
             d_name = "" if len(datasets) == 1 else d
             #add headers to table showing the rsquared and other aspects of the fit and dataset
-            axarr[0,1].annotate(s=d_name[1:], xy=(xd[d],yaxis_pos[2]), fontsize=af, xycoords=xyc, alpha=0.75)
+            axarr[0,1].annotate(text=d_name[1:], xy=(xd[d],yaxis_pos[2]), fontsize=af, xycoords=xyc, alpha=0.75)
             if dfe.loc["EC50_calculable{}".format(d),sLet]:
                 EC50colour = "k" if dfe.loc["data_seems_okay{}".format(d),sLet] == True else "r"
-                axarr[0,1].annotate(s="%0.2f" % dfe.loc["EC50{}".format(d),sLet], xy=(xd[d],yaxis_pos[3]), fontsize=af, xycoords=xyc, alpha=0.75, color=EC50colour)
+                axarr[0,1].annotate(text="%0.2f" % dfe.loc["EC50{}".format(d),sLet], xy=(xd[d],yaxis_pos[3]), fontsize=af, xycoords=xyc, alpha=0.75, color=EC50colour)
                 # rsquared of the fit to the data
-                axarr[0,1].annotate(s="%0.2f"% dfe.loc["rsquared{}".format(d),sLet], xy=(xd[d],yaxis_pos[4]), fontsize=af, xycoords=xyc, alpha=0.75,color=dfe.loc["rsquared{}".format(d),"%s_colour" % sLet])
+                axarr[0,1].annotate(text="%0.2f"% dfe.loc["rsquared{}".format(d),sLet], xy=(xd[d],yaxis_pos[4]), fontsize=af, xycoords=xyc, alpha=0.75,color=dfe.loc["rsquared{}".format(d),"%s_colour" % sLet])
                 # hillslope of the fit to the data
-                axarr[0,1].annotate(s="%0.1f"% dfe.loc["hillslope{}".format(d),sLet], xy=(xd[d],yaxis_pos[5]), fontsize=af, xycoords=xyc, alpha=0.75, color = dfe.loc["hillslope{}".format(d),"%s_colour" % sLet])
+                axarr[0,1].annotate(text="%0.1f"% dfe.loc["hillslope{}".format(d),sLet], xy=(xd[d],yaxis_pos[5]), fontsize=af, xycoords=xyc, alpha=0.75, color = dfe.loc["hillslope{}".format(d),"%s_colour" % sLet])
                 # number of lowdose datapoints
-                axarr[0,1].annotate(s="%i"% dfe.loc["n_lowdose_datapoints{}".format(d),sLet], xy=(xd[d],yaxis_pos[6]), fontsize=af, xycoords=xyc, alpha=0.75, color = dfe.loc["n_lowdose_datapoints{}".format(d),"%s_colour" % sLet])
+                axarr[0,1].annotate(text="%i"% dfe.loc["n_lowdose_datapoints{}".format(d),sLet], xy=(xd[d],yaxis_pos[6]), fontsize=af, xycoords=xyc, alpha=0.75, color = dfe.loc["n_lowdose_datapoints{}".format(d),"%s_colour" % sLet])
                 # std of lowdose datapoints
-                axarr[0,1].annotate(s="%0.2f"% dfe.loc["std_resp_lowdose_datapoints{}".format(d),sLet], xy=(xd[d],yaxis_pos[7]), fontsize=af, xycoords=xyc, alpha=0.75, color = dfe.loc["std_resp_lowdose_datapoints{}".format(d),"%s_colour" % sLet])
+                axarr[0,1].annotate(text="%0.2f"% dfe.loc["std_resp_lowdose_datapoints{}".format(d),sLet], xy=(xd[d],yaxis_pos[7]), fontsize=af, xycoords=xyc, alpha=0.75, color = dfe.loc["std_resp_lowdose_datapoints{}".format(d),"%s_colour" % sLet])
                  # number of highdose datapoints
-                axarr[0,1].annotate(s="%i"% dfe.loc["n_highdose_datapoints{}".format(d),sLet], xy=(xd[d],yaxis_pos[8]), fontsize=af, xycoords=xyc, alpha=0.75, color = dfe.loc["n_highdose_datapoints{}".format(d),"%s_colour" % sLet])
+                axarr[0,1].annotate(text="%i"% dfe.loc["n_highdose_datapoints{}".format(d),sLet], xy=(xd[d],yaxis_pos[8]), fontsize=af, xycoords=xyc, alpha=0.75, color = dfe.loc["n_highdose_datapoints{}".format(d),"%s_colour" % sLet])
                 # std of highdose datapoints
-                axarr[0,1].annotate(s="%0.2f"% dfe.loc["std_resp_highdose_datapoints{}".format(d),sLet], xy=(xd[d],yaxis_pos[9]), fontsize=af, xycoords=xyc, alpha=0.75, color = dfe.loc["std_resp_highdose_datapoints{}".format(d),"%s_colour" % sLet])
+                axarr[0,1].annotate(text="%0.2f"% dfe.loc["std_resp_highdose_datapoints{}".format(d),sLet], xy=(xd[d],yaxis_pos[9]), fontsize=af, xycoords=xyc, alpha=0.75, color = dfe.loc["std_resp_highdose_datapoints{}".format(d),"%s_colour" % sLet])
 
             else:
                 if isinstance(dfe.loc["EC50{}".format(d),sLet], str):
@@ -896,7 +896,7 @@ def calc_EC50(fn, dff, settings, t20):
                 elif isinstance(dfe.loc["EC50{}".format(d),sLet], float):
                     dfe.loc["EC50_to_insert{}".format(d),sLet] = "0.0f".format(dfe.loc["EC50{}".format(d),sLet])
                 # insert error string or EC50, coloured red to indicate likely poor data
-                axarr[0,1].annotate(s=dfe.loc["EC50_to_insert{}".format(d),sLet], xy=(xd[d],yaxis_pos[3]), fontsize=af, xycoords=xyc, alpha=0.75, color = "r")
+                axarr[0,1].annotate(text=dfe.loc["EC50_to_insert{}".format(d),sLet], xy=(xd[d],yaxis_pos[3]), fontsize=af, xycoords=xyc, alpha=0.75, color = "r")
 
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
         #                                                                                                     #
@@ -912,18 +912,18 @@ def calc_EC50(fn, dff, settings, t20):
         Plot_Nr = 4
 
         # #add a table showing the rsquared and other aspects of the fit and dataset
-        # axarr[1,1].annotate(s="ful", xy=(xful,yaxis_pos[2]), fontsize=af, xycoords=xyc, alpha=0.75)
-        # axarr[1,1].annotate(s="orig", xy=(0.8,yaxis_pos[2]), fontsize=af, xycoords=xyc, alpha=0.75)
+        # axarr[1,1].annotate(text="ful", xy=(xful,yaxis_pos[2]), fontsize=af, xycoords=xyc, alpha=0.75)
+        # axarr[1,1].annotate(text="orig", xy=(0.8,yaxis_pos[2]), fontsize=af, xycoords=xyc, alpha=0.75)
 
-        axarr[1,1].annotate(s="dose conc. stepsize", xy=(xaxis_left,yaxis_pos[4]), fontsize=af, xycoords=xyc, alpha=0.75)
-        axarr[1,1].annotate(s="slope at lowdose", xy=(xaxis_left,yaxis_pos[5]), fontsize=af, xycoords=xyc, alpha=0.75)
-        axarr[1,1].annotate(s="slope at highdose", xy=(xaxis_left,yaxis_pos[6]), fontsize=af, xycoords=xyc, alpha=0.75)
+        axarr[1,1].annotate(text="dose conc. stepsize", xy=(xaxis_left,yaxis_pos[4]), fontsize=af, xycoords=xyc, alpha=0.75)
+        axarr[1,1].annotate(text="slope at lowdose", xy=(xaxis_left,yaxis_pos[5]), fontsize=af, xycoords=xyc, alpha=0.75)
+        axarr[1,1].annotate(text="slope at highdose", xy=(xaxis_left,yaxis_pos[6]), fontsize=af, xycoords=xyc, alpha=0.75)
 
         for n,d in enumerate(datasets):
             # change the dataset name (e.g. "_orig" to "") to an empty string if there is only one dataset for analysis
             d_name = "" if len(datasets) == 1 else d
             #add a table showing the rsquared and other aspects of the fit for adjusted datasets
-            axarr[1,1].annotate(s=d_name[1:], xy=(xd[d],yaxis_pos[2]), fontsize=af, xycoords=xyc, alpha=0.75)
+            axarr[1,1].annotate(text=d_name[1:], xy=(xd[d],yaxis_pos[2]), fontsize=af, xycoords=xyc, alpha=0.75)
             EC50_calculable = dfe.loc["EC50_calculable{}".format(d),sLet]
             if EC50_calculable:
                 # add the stepsize near the EC50, which determines whether more dose concentrations are necessary
@@ -931,12 +931,12 @@ def calc_EC50(fn, dff, settings, t20):
                 stepcolour = dfe.loc["doseconc_stepsize_at_EC50{}".format(d), "%s_colour" % sLet]
 
                 # if dfe.loc["doseconc_stepsize_at_EC50{}".format(d),"%s_okay" % sLet] == True:
-                axarr[1,1].annotate(s=stepsize,xy=(xd[d],yaxis_pos[4]), fontsize=af, xycoords=xyc, alpha=0.75, color=stepcolour)
+                axarr[1,1].annotate(text=stepsize,xy=(xd[d],yaxis_pos[4]), fontsize=af, xycoords=xyc, alpha=0.75, color=stepcolour)
                 saxe_lowdose = "{:0.2f}".format(dfe.loc["saxe_lowdose{}".format(d), sLet])
                 saxe_highdose = "{:0.2f}".format(dfe.loc["saxe_highdose{}".format(d), sLet])
-                axarr[1,1].annotate(s=saxe_lowdose,xy=(xd[d],yaxis_pos[5]), fontsize=af, xycoords=xyc, alpha=0.75,
+                axarr[1,1].annotate(text=saxe_lowdose,xy=(xd[d],yaxis_pos[5]), fontsize=af, xycoords=xyc, alpha=0.75,
                                     color=dfe.loc["saxe_lowdose{}".format(d),"%s_colour" % sLet])
-                axarr[1,1].annotate(s=saxe_highdose,xy=(xd[d],yaxis_pos[6]), fontsize=af, xycoords=xyc, alpha=0.75,
+                axarr[1,1].annotate(text=saxe_highdose,xy=(xd[d],yaxis_pos[6]), fontsize=af, xycoords=xyc, alpha=0.75,
                                     color=dfe.loc["saxe_highdose{}".format(d),"%s_colour" % sLet])
                 if stepcolour != "k":
                     doseconc_steps_at_EC50 = dfe.loc["doseconc_steps_at_EC50{}".format(d),sLet]
@@ -959,8 +959,8 @@ def calc_EC50(fn, dff, settings, t20):
                 if isinstance(EC50, str):
                     # define x_position of annotation. Place the orig at around 0.6, & 2nd dataset(_ful) at around 0.3
                     xd_wide = xd[d]-0.3-0.3*n
-                    axarr[1,1].annotate(s=d_name[1:],xy=(xd_wide,yaxis_pos[5]), fontsize=af, xycoords=xyc, color="r")
-                    axarr[1,1].annotate(s=EC50,xy=(xd_wide,yaxis_pos[6]), fontsize=af, xycoords=xyc, color="r")
+                    axarr[1,1].annotate(text=d_name[1:],xy=(xd_wide,yaxis_pos[5]), fontsize=af, xycoords=xyc, color="r")
+                    axarr[1,1].annotate(text=EC50,xy=(xd_wide,yaxis_pos[6]), fontsize=af, xycoords=xyc, color="r")
 
         # create a dictionary with the formatted EC50 values for printing on the figure
         EC50_str_dict = {}

@@ -21,7 +21,6 @@ def test_processing_of_example_data():
     rmtree(test_temp_output_path)
 
 
-
 def set_up_excel_settings_for_functional_test():
     eccpy_module_path = get_eccpy_module_path()
 
@@ -42,7 +41,7 @@ def set_up_excel_settings_for_functional_test():
     input_data_cells = ["G2", "G3", "G4", "G5"]
     output_data_cells = ["H2", "H3", "H4", "H5"]
 
-    ws = wb.get_sheet_by_name(sheet)
+    ws = wb[sheet]
 
     for cell in input_data_cells:
         ws[cell] = example_data_dir

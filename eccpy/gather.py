@@ -47,7 +47,7 @@ def run_gatherer(settings_excel_file, **kwargs):
     Usage
     -----
     import eccpy
-    settings = r"C:\path\to\your\settings\file.xlsx"
+    settings = r"C:/path/to/your/settings/file.xlsx"
     eccpy.run_gatherer(settings)
 
     Saved Files
@@ -576,7 +576,7 @@ def run_gatherer(settings_excel_file, **kwargs):
                 #     # set the labels of the x-bar_axis
                 #     barnorm_ax.set_xticklabels(barnorm_x_names, rotation=90)
                 #
-                #     # ax.annotate(s="%s%s" % (nametype,d), xy=(0.015,0.93), fontsize=af, xycoords=xyc)
+                #     # ax.annotate(text="%s%s" % (nametype,d), xy=(0.015,0.93), fontsize=af, xycoords=xyc)
                 #     barnorm_ax.set_title("analysed data ({e} experiments),  {b}".format(b=d_name,
                 #                                              e=dff.loc[dff["run gatherer"] == True].shape[0]))
                 #     # automatically tighten the layout and save figure

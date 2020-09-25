@@ -205,7 +205,7 @@ def compare_rawdata(settings_excel_file, sample_names, **kwargs):
                 xaxis_pos = 0.02
                 yaxis_pos = np.linspace(0.95,0.7,8)
                 for n, sample_name in enumerate(sample_tuple):
-                    ax.annotate(s=sample_name,  xy=(xaxis_pos,yaxis_pos[n]),
+                    ax.annotate(text=sample_name,  xy=(xaxis_pos,yaxis_pos[n]),
                                 xycoords=xyc,
                                 color = t20[n])
                 ymin, ymax = ax.get_ylim()
