@@ -7,7 +7,9 @@
 ECCpy, a program for EC50 calculation in python.
 ================================================
 
-The EC50, or the "half maximal effective concentration", is a key measure of the effectiveness of a compound to affect a biological system. It is commonly used in pharmacology, biology and biochemistry. The EC50 is calculated by fitting the dose-response data to a sigmoidal curve, typically using the Hill equation. Variants include the half maximal "lethal dose" (LD50), and "inhibitor concentration" (IC50).
+The EC50, or the "half maximal effective concentration", is a key measure of the effectiveness of a compound to affect a biological system.
+It is commonly used in pharmacology, biology and biochemistry. The EC50 is calculated by fitting the dose-response data to a sigmoidal curve,
+typically using the Hill equation. Variants include the half maximal "lethal dose" (LD50), and "inhibitor concentration" (IC50).
 
 Features
 --------
@@ -47,7 +49,9 @@ Customisable
 Development status
 ------------------
 
-ECCpy has been used extensively for the analysis of LD50 assays by bachelor, master and PhD students within the lab of Dieter Langosch at the Technical University of Munich in Germany. However this software is released "as is", and is likely to contain bugs related to particular data types, python versions or operating systems.
+ECCpy has been used extensively for the analysis of LD50 assays by bachelor, master and PhD students within the lab of Dieter Langosch
+at the Technical University of Munich in Germany. However this software is released "as is", and may contain bugs
+related to particular data types, python versions or operating systems.
 
 Installation
 ------------
@@ -55,17 +59,17 @@ Installation
 
 	pip install eccpy
 
-ECCpy is written for python 3.x. We recommend the Anaconda python distribution, which contains all the required python packages (numpy, scipy, pandas and matplotlib).
-https://www.continuum.io/downloads
-
+ECCpy is written for python 3. We recommend the `Anaconda python distribution <https://www.anaconda.com/products/individual>`_,
+which contains all the required python packages (numpy, scipy, pandas and matplotlib). If you encounter dependency issues, we suggest
+creating a python virtual environment with `conda <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-with-commands>`_
+or `virtualenv <https://packaging.python.org/guides/installing-using-pip-and-virtual-environments>`_, and installing the exact package versions
+specified in the `requirements.txt <https://github.com/teese/eccpy/tree/develop/requirements.txt>`_
 
 Usage
 -----
 
-Using ECCpy requires only the following:
-1) Prepare your data, 2) update an excel settings file, 3) tell ECCpy to "run".
+As described in the `wiki <https://github.com/teese/eccpy/wiki>`_, ECCpy requires only the following three steps:
 
-See the wiki for more details (https://github.com/teese/eccpy/wiki).
 
 **1) Prepare your data.**
  - use the excel or microplate templates in the eccpy/templates folder
@@ -80,9 +84,9 @@ See the wiki for more details (https://github.com/teese/eccpy/wiki).
    :height: 120px
    :width: 700px
 
-**3) tell ECCpy to "run".**
+**3) Run ECCpy**
  - run the ipython/jupyter notebook, which opens a python interpreter in your web browser
- - paste in the following three lines. Replace the location of your settings file.
+ - paste in the following four lines. Replace the location of your settings file.
  - hit Ctrl-Enter to run
  - based on your output, adjust the quality thresholds in the settings file to suit your data
 
@@ -96,7 +100,11 @@ Example::
 Test
 ----
 
-* run eccpy on the provided example files (eccpy/examples) before processing your own data.
+* before processing your own data, run eccpy on the provided example files provided, following the instructions in the `ECCpy wiki <https://github.com/teese/eccpy/wiki>`_.
+* example data is available in `eccpy/examples/example_data <https://github.com/teese/eccpy/tree/develop/eccpy/examples/example_data>`_
+* example settings are available in `eccpy/examples/example_settings <https://github.com/teese/eccpy/tree/develop/eccpy/examples/example_settings>`_
+* TIP: when downloading ECCpy from github, run :code:`pytest` in the ECCpy repository directory to automatically start functional tests
+
 
 ECCpy output
 ------------
@@ -148,6 +156,11 @@ License
 
 ECCpy is free software distributed under the permissive MIT license.
 
+Releases
+--------
+
+Release-notes are found in `/docs/releases.rst <https://github.com/teese/eccpy/tree/develop/docs/releases.rst>`_
+
 
 Citation
 --------
@@ -162,16 +175,9 @@ https://www.ncbi.nlm.nih.gov/pubmed/28266525
 Contact
 -------
 
-Currently the code is maintained by Mark Teese at the Technical University of Munich. 
+ECCpy is currently maintained by Mark Teese of `TNG Technology Consulting GmbH <https://www.tngtech.com/en/index.html>`_, formerly of the `Langosch lab <http://cbp.wzw.tum.de/index.php?id=9>`_ of the Technical University of Munich.
 
 For contact details, see the image below.
-
-You can also contact the `Langosch lab`__ of the Technical University of Munich.
-
-.. _LangoschPage: http://cbp.wzw.tum.de/index.php?id=9
-
-__ LangoschPage_
-
 
 .. image:: https://raw.githubusercontent.com/teese/eccpy/master/docs/images/signac_seine_bei_samois.png
    :height: 150px
