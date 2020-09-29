@@ -1,8 +1,9 @@
-include MANIFEST.in
 include license.txt
+include MANIFEST.in
+include readme.rst
+include requirements.txt
 include setup.cfg
-include README.md
-include README.rst
+include docs/releases.rst
 include eccpy/examples/example_data/generated_data_0.xlsx
 include eccpy/examples/example_data/generated_data_1.xlsx
 include eccpy/examples/example_data/generated_data_2.xlsx
