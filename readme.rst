@@ -139,6 +139,13 @@ ECCpy output
    :height: 600px
    :width: 700px
 
+Tutorial video
+--------------
+
+You can also check out a "how to install and run ECCpy" video by following the link below:
+
+https://www.youtube.com/watch?v=H-cRd3-vKVg
+
 Contribute
 ----------
 
