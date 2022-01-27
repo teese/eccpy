@@ -1106,7 +1106,7 @@ def calc_EC50(fn, dff, settings, t20):
             lg.draw_frame(False)
         # set the x-axis limit so that the legend does not hide too many data points
         # find the maximum dose concentration in the whole experiment for that day
-        maxAC = x_orig.max().max()
+        # maxAC = x_orig.max().max()
         # # obtain the variable altering the extension of the x-axis
         # x_axis_extension_after_dosemax_in_summ_plot = dff.loc[fn, "x-axis extension in summary fig_0"]
         # #define the limit of the x-axis as the maximum dose conc.
